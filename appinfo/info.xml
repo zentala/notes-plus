@@ -6,12 +6,15 @@
 -->
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>notes</id>
-	<name>Notes</name>
-	<summary>Distraction-free notes and writing</summary>
+	<name>Notes+</name>
+	<summary>Google-Keep-style notes: colored tags, colors, cards — sync-safe Markdown</summary>
 	<description><![CDATA[
-The Notes app is a distraction free notes taking app for [Nextcloud](https://www.nextcloud.com/). It provides categories for better organization and supports formatting using [Markdown](https://en.wikipedia.org/wiki/Markdown) syntax. Notes are saved as files in your Nextcloud, so you can view and edit them with every Nextcloud client. Furthermore, a separate [REST API](https://github.com/nextcloud/notes/blob/master/docs/api/README.md) allows for an easy integration into apps ([Android](https://github.com/nextcloud/notes-android), [iOS](https://github.com/nextcloud/notes-ios), as well as [3rd-party apps](https://github.com/nextcloud/notes/wiki#3rd-party-clients) which allow convenient access to your Nextcloud notes). Further features include marking notes as favorites.]]></description>
+Notes+ is a community fork of the Nextcloud Notes app that adds the Google-Keep-style features the official app has long declined — colored multi-tag labels, per-note colors, archive, a card grid, and first-class checklists — while keeping every note as a plain, sync-safe Markdown file in your Nextcloud (editable from any client). Colors and tags live in the note's front-matter, so your notes stay portable and exportable. A separate REST API allows easy integration. Fork of [Nextcloud Notes](https://github.com/nextcloud/notes) (AGPL-3.0-or-later).
+
+NOTE: the app id / PHP namespace are still `notes` during early development; they are renamed to `notesplus` as a build-verified step before app-store publish (see the plan). The official mobile apps target the upstream `notes` app and do not connect to this fork.]]></description>
 	<version>6.0.1</version>
 	<licence>agpl</licence>
+	<author>Paweł Żentała</author>
 	<author>Kristof Hamann</author>
 	<author>Bernhard Posselt</author>
 	<author>Hendrik Leppelsack</author>
