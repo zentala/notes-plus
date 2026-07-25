@@ -6,7 +6,7 @@
 <template>
 	<NcButton variant="secondary" @click="onNewNote">
 		<Plus slot="icon" :size="20" />
-		{{ t('notes', 'Create a sample note with Markdown') }}
+		{{ t('notesplus', 'Create a sample note with Markdown') }}
 	</NcButton>
 </template>
 

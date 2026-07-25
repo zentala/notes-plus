@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "குறிப்புகள்",
     "Error" : "வழு",

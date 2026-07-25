@@ -14,19 +14,19 @@
 				<div class="conflict-modal">
 					<div class="conflict-header">
 						<SyncAlertIcon slot="icon" :size="30" fill-color="var(--color-error)" />
-						{{ t('notes', 'The note has been changed in another session. Please choose which version should be saved.') }}
+						{{ t('notesplus', 'The note has been changed in another session. Please choose which version should be saved.') }}
 					</div>
 					<div class="conflict-solutions">
 						<ConflictSolution
 							:content="note.conflict.content"
 							:reference="note.reference.content"
-							:button="t('notes', 'Use version from server')"
+							:button="t('notesplus', 'Use version from server')"
 							@on-choose-solution="onUseRemoteVersion"
 						/>
 						<ConflictSolution
 							:content="note.content"
 							:reference="note.reference.content"
-							:button="t('notes', 'Use current version')"
+							:button="t('notesplus', 'Use current version')"
 							@on-choose-solution="onUseLocalVersion"
 						/>
 					</div>
@@ -34,7 +34,7 @@
 			</NcModal>
 			<div class="note-editor">
 				<div v-show="!note.content" class="placeholder">
-					{{ preview ? t('notes', 'Empty note') : t('notes', 'Write …') }}
+					{{ preview ? t('notesplus', 'Empty note') : t('notesplus', 'Write …') }}
 				</div>
 				<ThePreview v-if="preview"
 					:value="note.content"
@@ -53,37 +53,37 @@
 			<span class="action-buttons">
 				<NcActions :open.sync="actionsOpen" container=".action-buttons" menu-align="right">
 					<NcActionButton
-						:title="t('notes', 'CTRL + /')"
+						:title="t('notesplus', 'CTRL + /')"
 						@click="onTogglePreview"
 					>
 						<PencilOutlineIcon v-if="preview" slot="icon" :size="20" />
 						<EyeOutlineIcon v-else slot="icon" :size="20" />
-						{{ preview ? t('notes', 'Edit') : t('notes', 'Preview') }}
+						{{ preview ? t('notesplus', 'Edit') : t('notesplus', 'Preview') }}
 					</NcActionButton>
 					<NcActionButton
 						:class="{ active: fullscreen }"
 						@click="onToggleDistractionFree"
 					>
 						<FullscreenIcon slot="icon" :size="20" />
-						{{ fullscreen ? t('notes', 'Exit full screen') : t('notes', 'Full screen') }}
+						{{ fullscreen ? t('notesplus', 'Exit full screen') : t('notesplus', 'Full screen') }}
 					</NcActionButton>
 				</NcActions>
 				<NcActions v-if="note.readonly">
 					<NcActionButton>
 						<PencilOffOutlineIcon slot="icon" :size="20" />
-						{{ t('notes', 'Note is read-only. You cannot change it.') }}
+						{{ t('notesplus', 'Note is read-only. You cannot change it.') }}
 					</NcActionButton>
 				</NcActions>
 				<NcActions v-if="note.saveError" class="action-error">
 					<NcActionButton @click="onManualSave">
 						<SyncAlertIcon slot="icon" :size="20" fill-color="var(--color-text)" />
-						{{ t('notes', 'Save failed. Click to retry.') }}
+						{{ t('notesplus', 'Save failed. Click to retry.') }}
 					</NcActionButton>
 				</NcActions>
 				<NcActions v-if="note.conflict" class="action-error">
 					<NcActionButton @click="showConflict = true">
 						<SyncAlertIcon slot="icon" :size="20" fill-color="var(--color-text)" />
-						{{ t('notes', 'Update conflict. Click for resolving manually.') }}
+						{{ t('notesplus', 'Update conflict. Click for resolving manually.') }}
 					</NcActionButton>
 				</NcActions>
 			</span>
@@ -230,7 +230,7 @@ export default {
 			fetchNote(parseInt(this.noteId))
 				.then((note) => {
 					if (note.error) {
-						showError(t('notes', 'Error from Nextcloud server: {msg}', { msg: note.errorType }))
+						showError(t('notesplus', 'Error from Nextcloud server: {msg}', { msg: note.errorType }))
 					}
 					this.startRefreshTimer()
 				})

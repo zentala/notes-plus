@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "Mazingatio",
     "Create new note" : "Tengeneza zingatio jipya",

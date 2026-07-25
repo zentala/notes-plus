@@ -7,9 +7,9 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Listener;
+namespace OCA\NotesPlus\Listener;
 
-use OCA\Notes\Service\MetaService;
+use OCA\NotesPlus\Service\MetaService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Files\Events\Node\BeforeNodeDeletedEvent;

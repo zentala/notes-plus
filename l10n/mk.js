@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "Белешки",
     "Reading notes from filesystem has failed." : "Неуспешно вчитување на белесшките.",

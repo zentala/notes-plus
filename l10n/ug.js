@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "ئىزاھاتلار",
     "Create new note" : "يېڭى خاتىرە قۇر",

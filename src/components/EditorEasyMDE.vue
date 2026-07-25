@@ -18,7 +18,7 @@
 					:close-after-click="true"
 					@click="onClickUploadImage"
 				>
-					{{ t('notes', 'Upload image') }}
+					{{ t('notesplus', 'Upload image') }}
 				</NcActionButton>
 				<NcActionButton
 					:close-after-click="true"
@@ -27,7 +27,7 @@
 					<template #icon>
 						<ImageOutlineIcon :size="20" />
 					</template>
-					{{ t('notes', 'Insert image') }}
+					{{ t('notesplus', 'Insert image') }}
 				</NcActionButton>
 			</NcActions>
 		</div>
@@ -200,12 +200,12 @@ export default {
 			const doc = this.mde.codemirror.getDoc()
 			const cursor = this.mde.codemirror.getCursor()
 			OC.dialogs.filepicker(
-				t('notes', 'Select an image'),
+				t('notesplus', 'Select an image'),
 				(path) => {
 					if (!path.startsWith(apppath)) {
 						OC.dialogs.alert(
-							t('notes', 'You cannot select images outside of your notes folder. Your notes folder is: {folder}', { folder: apppath }),
-							t('notes', 'Wrong image'),
+							t('notesplus', 'You cannot select images outside of your notes folder. Your notes folder is: {folder}', { folder: apppath }),
+							t('notesplus', 'Wrong image'),
 						)
 						return
 					}
@@ -247,7 +247,7 @@ export default {
 					})
 					.catch((error) => {
 						logger.error('Failed to upload attachment', { error })
-						showError(t('notes', 'The file was not uploaded. Check your server logs.'))
+						showError(t('notesplus', 'The file was not uploaded. Check your server logs.'))
 					})
 			}
 			temporaryInput.click()

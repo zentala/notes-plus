@@ -6,6 +6,6 @@
 import { getLoggerBuilder } from '@nextcloud/logger'
 
 export default getLoggerBuilder()
-	.setApp('notes')
+	.setApp('notesplus')
 	.detectUser()
 	.build()

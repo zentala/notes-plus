@@ -19,7 +19,7 @@ async function openNoteActions(page: Page, noteId: number): Promise<Locator> {
 test.describe('Note actions', () => {
 	test.beforeEach(async ({ page }) => {
 		await login(page)
-		await page.goto('/index.php/apps/notes/')
+		await page.goto('/index.php/apps/notesplus/')
 		await expect(newNoteButton(page)).toBeVisible()
 	})
 

@@ -6,7 +6,7 @@
 <template>
 	<Fragment>
 		<div class="help-mobile">
-			<NcFormGroup :label="t('notes', 'Android')">
+			<NcFormGroup :label="t('notesplus', 'Android')">
 				<div class="badge-wrapper">
 					<div>
 						<div class="badge">
@@ -23,7 +23,7 @@
 				</div>
 			</NcFormGroup>
 
-			<NcFormGroup :label="t('notes', 'iPhone and iPad')">
+			<NcFormGroup :label="t('notesplus', 'iPhone and iPad')">
 				<div class="badge-wrapper">
 					<div>
 						<div class="badge">
@@ -52,7 +52,7 @@ export default {
 
 	methods: {
 		getRoute(file) {
-			return generateFilePath('notes', 'img', file)
+			return generateFilePath('notesplus', 'img', file)
 		},
 	},
 }

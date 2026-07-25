@@ -5,7 +5,7 @@
   - SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-	<id>notes</id>
+	<id>notesplus</id>
 	<name>Notes+</name>
 	<summary>Google-Keep-style notes: colored tags, colors, cards — sync-safe Markdown</summary>
 	<description><![CDATA[
@@ -19,7 +19,7 @@ NOTE: the app id / PHP namespace are still `notes` during early development; the
 	<author>Bernhard Posselt</author>
 	<author>Hendrik Leppelsack</author>
 	<author>Jan-Christoph Borchardt</author>
-	<namespace>Notes</namespace>
+	<namespace>NotesPlus</namespace>
 	<category>office</category>
 	<category>organization</category>
 	<category>tools</category>
@@ -33,16 +33,16 @@ NOTE: the app id / PHP namespace are still `notes` during early development; the
 	</dependencies>
 	<repair-steps>
 		<post-migration>
-			<step>OCA\Notes\Migration\Cleanup</step>
-			<step>OCA\Notes\Migration\EditorHint</step>
+			<step>OCA\NotesPlus\Migration\Cleanup</step>
+			<step>OCA\NotesPlus\Migration\EditorHint</step>
 		</post-migration>
 	</repair-steps>
 
 	<navigations>
 		<navigation>
-			<id>notes</id>
-			<name>Notes</name>
-			<route>notes.page.index</route>
+			<id>notesplus</id>
+			<name>Notes+</name>
+			<route>notesplus.page.index</route>
 			<icon>notes.svg</icon>
 			<order>10</order>
 		</navigation>

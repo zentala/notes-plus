@@ -7,7 +7,7 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\AppInfo;
+namespace OCA\NotesPlus\AppInfo;
 
 use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
 use OCP\EventDispatcher\Event;
@@ -22,6 +22,6 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		if (!$event->isLoggedIn()) {
 			return;
 		}
-		\OCP\Util::addStyle('notes', 'global');
+		\OCP\Util::addStyle('notesplus', 'global');
 	}
 }

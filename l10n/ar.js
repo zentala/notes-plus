@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "الملاحظات",
     "Create new note" : "إنشاء ملاحظة جديدة",

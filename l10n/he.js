@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "הערות",
     "Reading notes from filesystem has failed." : "קריאת הפתקים ממערכת הקבצים נכשלה.",

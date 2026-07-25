@@ -9,7 +9,7 @@
 		force-menu
 		:active.sync="activeTab"
 		:loading="isOpen && loading"
-		:name="note?.title || t('notes', 'Share')"
+		:name="note?.title || t('notesplus', 'Share')"
 		no-toggle
 		:open="isOpen"
 		@closed="onClosed"
@@ -35,7 +35,7 @@
 				<template #icon>
 					<ShareVariantOutlineIcon :size="44" />
 				</template>
-				{{ error || t('notes', 'Unable to load the selected note for sharing.') }}
+				{{ error || t('notesplus', 'Unable to load the selected note for sharing.') }}
 			</NcEmptyContent>
 
 			<component
@@ -52,7 +52,7 @@
 			<template #icon>
 				<ShareVariantOutlineIcon :size="44" />
 			</template>
-			{{ t('notes', 'Sharing is not available right now.') }}
+			{{ t('notesplus', 'Sharing is not available right now.') }}
 		</NcEmptyContent>
 	</NcAppSidebar>
 </template>
@@ -122,7 +122,7 @@ export default {
 		currentView() {
 			return {
 				id: 'notes',
-				name: this.t('notes', 'Notes'),
+				name: this.t('notesplus', 'Notes'),
 			}
 		},
 	},
@@ -140,7 +140,7 @@ export default {
 			const tab = this.sharingTab
 			if (!tab) {
 				this.loadingTab = false
-				this.tabError = this.t('notes', 'Sharing is not available right now.')
+				this.tabError = this.t('notesplus', 'Sharing is not available right now.')
 				return
 			}
 
@@ -165,7 +165,7 @@ export default {
 				this.initializedTabs.add(tab.tagName)
 			} catch (error) {
 				logger.error('Failed to initialize the sharing sidebar tab in Notes', { error })
-				this.tabError = this.t('notes', 'Failed to load the sharing sidebar.')
+				this.tabError = this.t('notesplus', 'Failed to load the sharing sidebar.')
 			} finally {
 				this.initializingTabs.delete(tab.tagName)
 				this.loadingTab = false
@@ -178,7 +178,7 @@ export default {
 				this.loadingContext = false
 				this.currentNode = null
 				this.currentFolder = null
-				this.contextError = this.t('notes', 'Unable to load the selected note for sharing.')
+				this.contextError = this.t('notesplus', 'Unable to load the selected note for sharing.')
 				return
 			}
 
@@ -210,7 +210,7 @@ export default {
 				logger.error('Failed to load the selected note for the Notes sharing sidebar', { error })
 				this.currentNode = null
 				this.currentFolder = null
-				this.contextError = this.t('notes', 'Unable to load the selected note for sharing.')
+				this.contextError = this.t('notesplus', 'Unable to load the selected note for sharing.')
 			} finally {
 				if (requestToken === this.contextRequestToken) {
 					this.loadingContext = false

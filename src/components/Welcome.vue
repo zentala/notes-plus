@@ -6,27 +6,27 @@
 <template>
 	<NcAppContent>
 		<div class="welcome-content">
-			<h2>{{ t('notes', 'Notes') }}</h2>
+			<h2>{{ t('notesplus', 'Notes') }}</h2>
 			<div class="feature icon-add">
-				{{ t('notes', 'Start writing a note by clicking on “{newnote}”.', { newnote: t('notes', 'New note') }) }}
+				{{ t('notesplus', 'Start writing a note by clicking on “{newnote}”.', { newnote: t('notesplus', 'New note') }) }}
 			</div>
 			<div class="feature">
 				<NcButton variant="secondary" @click="onNewNote">
 					<Plus slot="icon" :size="20" />
-					{{ t('notes', 'New note') }}
+					{{ t('notesplus', 'New note') }}
 				</NcButton>
 			</div>
 			<div class="feature icon-fullscreen">
-				{{ t('notes', 'Write down your thoughts without any distractions.') }}
+				{{ t('notesplus', 'Write down your thoughts without any distractions.') }}
 			</div>
 			<div class="feature icon-toggle-filelist">
-				{{ t('notes', 'Use Markdown markups to style your text.') }}
+				{{ t('notesplus', 'Use Markdown markups to style your text.') }}
 			</div>
 			<div class="feature">
 				<CreateSampleButton />
 			</div>
 			<div class="feature icon-files-dark">
-				{{ t('notes', 'Organize your notes in categories.') }}
+				{{ t('notesplus', 'Organize your notes in categories.') }}
 			</div>
 			<HelpMobile />
 		</div>

@@ -6,18 +6,18 @@
 <template>
 	<NcModal>
 		<div class="editor-hint-modal">
-			<h2>{{ t('notes', 'Rich text editor') }}</h2>
+			<h2>{{ t('notesplus', 'Rich text editor') }}</h2>
 
-			<p>{{ t('notes', 'You can now switch to use the easy to use and distraction free rich text editor. It allows you to edit notes without seeing any Markdown marks.') }}</p>
+			<p>{{ t('notesplus', 'You can now switch to use the easy to use and distraction free rich text editor. It allows you to edit notes without seeing any Markdown marks.') }}</p>
 
-			<p>{{ t('notes', 'This option can also be changed later on in the Notes app settings.') }}</p>
+			<p>{{ t('notesplus', 'This option can also be changed later on in the Notes app settings.') }}</p>
 
 			<div class="submit-buttons">
 				<NcButton variant="secondary" :disabled="loading" @click="useOld">
-					{{ t('notes', 'Keep plain Markdown editor') }}
+					{{ t('notesplus', 'Keep plain Markdown editor') }}
 				</NcButton>
 				<NcButton variant="primary" :disabled="loading" @click="useNew">
-					{{ t('notes', 'Use rich editor') }}
+					{{ t('notesplus', 'Use rich editor') }}
 				</NcButton>
 			</div>
 		</div>
@@ -44,7 +44,7 @@ export default {
 
 	methods: {
 		async useOld() {
-			const oldState = loadState('notes', 'config', {})
+			const oldState = loadState('notesplus', 'config', {})
 			setSettings({
 				...oldState,
 				noteMode: oldState?.nodeMode ?? 'edit',
@@ -55,7 +55,7 @@ export default {
 
 		async useNew() {
 			setSettings({
-				...loadState('notes', 'config', {}),
+				...loadState('notesplus', 'config', {}),
 				noteMode: 'rich',
 			})
 			await deleteEditorMode()

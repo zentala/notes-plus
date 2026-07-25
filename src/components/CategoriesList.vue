@@ -6,7 +6,7 @@
 <template>
 	<Fragment>
 		<NcAppNavigationItem
-			:name="t('notes', 'All notes')"
+			:name="t('notesplus', 'All notes')"
 			:active="selectedCategory === null"
 			:draggable="false"
 			class="category-no-actions"
@@ -29,7 +29,7 @@
 			</template>
 		</NcAppNavigationItem>
 
-		<NcAppNavigationCaption :name="t('notes', 'Categories')" />
+		<NcAppNavigationCaption :name="t('notesplus', 'Categories')" />
 
 		<NcAppNavigationItem
 			v-if="newCategoryDraft"
@@ -37,8 +37,8 @@
 			name=""
 			:draggable="false"
 			:editable="true"
-			:edit-label="t('notes', 'Rename category')"
-			:edit-placeholder="t('notes', 'New category')"
+			:edit-label="t('notesplus', 'Rename category')"
+			:edit-placeholder="t('notesplus', 'New category')"
 			:force-menu="true"
 			:force-display-actions="true"
 			class="category-draft"
@@ -62,7 +62,7 @@
 			:active="category.name === selectedCategory"
 			:draggable="false"
 			:editable="category.name !== ''"
-			:edit-label="t('notes', 'Rename category')"
+			:edit-label="t('notesplus', 'Rename category')"
 			:edit-placeholder="category.name"
 			:force-menu="category.name !== ''"
 			:force-display-actions="category.name !== ''"
@@ -94,7 +94,7 @@
 					<template #icon>
 						<DeleteIcon :size="20" />
 					</template>
-					{{ t('notes', 'Delete category') }}
+					{{ t('notesplus', 'Delete category') }}
 				</NcActionButton>
 			</template>
 		</NcAppNavigationItem>
@@ -290,7 +290,7 @@ export default {
 			if (notes.length > 0) {
 				let confirmed
 				const message = this.n(
-					'notes',
+					'notesplus',
 					'Delete category "{category}" and its {count} note?',
 					'Delete category "{category}" and its {count} notes?',
 					notes.length,
@@ -298,10 +298,10 @@ export default {
 				)
 				try {
 					confirmed = await showConfirmation({
-						name: this.t('notes', 'Delete category'),
+						name: this.t('notesplus', 'Delete category'),
 						text: message,
-						labelConfirm: this.t('notes', 'Delete'),
-						labelReject: this.t('notes', 'Cancel'),
+						labelConfirm: this.t('notesplus', 'Delete'),
+						labelReject: this.t('notesplus', 'Cancel'),
 						severity: 'warning',
 					})
 				} catch {

@@ -7,7 +7,7 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Tests\API;
+namespace OCA\NotesPlus\Tests\API;
 
 use PHPUnit\Framework\TestCase;
 
@@ -41,8 +41,8 @@ class CapabilitiesTest extends TestCase {
 		);
 		$ocs = json_decode($response->getBody()->getContents());
 		$capabilities = $ocs->ocs->data->capabilities;
-		$this->assertObjectHasAttribute('notes', $capabilities, 'Nextcloud provides capabilities');
-		$notesCapability = $capabilities->notes;
+		$this->assertObjectHasAttribute('notesplus', $capabilities, 'Nextcloud provides capabilities');
+		$notesCapability = $capabilities->notesplus;
 		$this->assertObjectHasAttribute('api_version', $notesCapability, 'Notes API-Version capability exists');
 		$apiVersions = $notesCapability->api_version;
 		$this->assertIsArray($apiVersions, 'Notes API-Version capability is array');
@@ -57,9 +57,9 @@ class CapabilitiesTest extends TestCase {
 
 	public function testInvalidVersion() {
 		$v = 7;
-		$response1 = $this->http->request('GET', 'index.php/apps/notes/api/v' . $v . '/notes');
+		$response1 = $this->http->request('GET', 'index.php/apps/notesplus/api/v' . $v . '/notes');
 		$this->assertEquals(400, $response1->getStatusCode(), 'First response status code');
-		$response2 = $this->http->request('GET', 'index.php/apps/notes/api/v' . $v . '/notes/1');
+		$response2 = $this->http->request('GET', 'index.php/apps/notesplus/api/v' . $v . '/notes/1');
 		$this->assertEquals(400, $response2->getStatusCode(), 'Second response status code');
 	}
 }

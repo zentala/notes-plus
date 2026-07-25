@@ -154,7 +154,7 @@ export default {
 				.replaceAll(/^(=+|-+)$/gmu, '')
 				.replaceAll(/(\*+|_+)(.*?)\\1/gmu, '$2')
 				.replaceAll(/\s/gmu, ' ')
-			return title.length > 0 ? title : t('notes', 'New note')
+			return title.length > 0 ? title : t('notesplus', 'New note')
 		},
 
 		async onFileRestoreRequested(event) {

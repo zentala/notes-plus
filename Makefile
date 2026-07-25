@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2013 Bernhard Posselt <nukewhale@gmail.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-app_name=notes
+app_name=notesplus
 project_dir=$(CURDIR)/../$(app_name)
 build_dir=$(CURDIR)/build/artifacts
 cert_dir=$(HOME)/.nextcloud/certificates

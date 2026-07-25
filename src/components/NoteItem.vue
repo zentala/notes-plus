@@ -41,7 +41,7 @@
 				<template #icon>
 					<ShareVariantOutlineIcon :size="20" />
 				</template>
-				{{ t('notes', 'Share') }}
+				{{ t('notesplus', 'Share') }}
 			</NcActionButton>
 
 			<NcActionButton v-if="!showCategorySelect" @click="showCategorySelect = true">
@@ -66,17 +66,17 @@
 				<template #icon>
 					<FolderOutlineIcon :size="20" />
 				</template>
-				{{ t('notes', 'Change category') }}
+				{{ t('notesplus', 'Change category') }}
 			</NcActionInput>
 
 			<NcActionButton v-if="!renaming" @click="startRenaming">
 				<PencilOutlineIcon slot="icon" :size="20" />
-				{{ t('notes', 'Rename') }}
+				{{ t('notesplus', 'Rename') }}
 			</NcActionButton>
 			<NcActionInput v-else
 				v-model.trim="newTitle"
 				:disabled="!renaming"
-				:placeholder="t('notes', 'Rename note')"
+				:placeholder="t('notesplus', 'Rename note')"
 				:show-trailing-button="true"
 				@input="onInputChange($event)"
 				@submit="onRename"
@@ -91,7 +91,7 @@
 				:close-after-click="true"
 				@click="onDeleteNote"
 			>
-				{{ t('notes', 'Delete note') }}
+				{{ t('notesplus', 'Delete note') }}
 			</NcActionButton>
 		</template>
 	</NcListItem>
@@ -178,7 +178,7 @@ export default {
 		},
 
 		actionFavoriteText() {
-			return this.note.favorite ? this.t('notes', 'Remove from favorites') : this.t('notes', 'Add to favorites')
+			return this.note.favorite ? this.t('notesplus', 'Remove from favorites') : this.t('notesplus', 'Add to favorites')
 		},
 
 		actionFavoriteIcon() {
@@ -293,7 +293,7 @@ export default {
 				})
 				.catch((e) => {
 					logger.error('Failed to rename note', { error: e })
-					showError(this.t('notes', 'Error while renaming note.'))
+					showError(this.t('notesplus', 'Error while renaming note.'))
 				})
 				.finally(() => {
 					this.loading.note = false
@@ -322,7 +322,7 @@ export default {
 				})
 			} catch (e) {
 				logger.error('Error during preparing note for deletion', { error: e })
-				showError(this.t('notes', 'Error during preparing note for deletion.'))
+				showError(this.t('notesplus', 'Error during preparing note for deletion.'))
 				this.loading.delete = false
 				this.actionsOpen = false
 			}

@@ -5,12 +5,12 @@
 
 <template>
 	<EditorHint v-if="editorHint" @close="editorHint = false" />
-	<NcContent v-else app-name="notes" :content-class="{loading: loading.notes}">
+	<NcContent v-else app-name="notesplus" :content-class="{loading: loading.notes}">
 		<NcAppNavigation :class="{loading: loading.notes, 'icon-error': error}">
 			<template #list>
 				<NcAppNavigationNew
 					v-show="!loading.notes && !error"
-					:text="t('notes', 'New category')"
+					:text="t('notesplus', 'New category')"
 					@click="onNewCategory"
 					@dragover.native="onNewCategoryDragOver"
 					@drop.native="onNewCategoryDrop"
@@ -25,7 +25,7 @@
 			<template #footer>
 				<ul class="app-navigation-entry__settings">
 					<NcAppNavigationItem
-						:name="t('notes', 'Notes settings')"
+						:name="t('notesplus', 'Notes settings')"
 						@click.prevent="openSettings"
 					>
 						<template #icon>
@@ -39,9 +39,9 @@
 
 		<NcAppContent v-if="error">
 			<div style="margin: 2em;">
-				<h2>{{ t('notes', 'Error') }}</h2>
+				<h2>{{ t('notesplus', 'Error') }}</h2>
 				<p>{{ error }}</p>
-				<p>{{ t('notes', 'Please see Nextcloud server log for details.') }}</p>
+				<p>{{ t('notesplus', 'Please see Nextcloud server log for details.') }}</p>
 			</div>
 		</NcAppContent>
 		<router-view v-else @note-deleted="onNoteDeleted" />
@@ -104,7 +104,7 @@ export default {
 			undoTimer: null,
 			deletedNotes: [],
 			refreshTimer: null,
-			editorHint: loadState('notes', 'editorHint', '') === 'yes' && window.OCA.Text?.createEditor,
+			editorHint: loadState('notesplus', 'editorHint', '') === 'yes' && window.OCA.Text?.createEditor,
 			settingsVisible: false,
 		}
 	},
@@ -264,12 +264,12 @@ export default {
 			this.clearUndoTimer()
 			let label
 			if (this.deletedNotes.length === 1) {
-				label = this.t('notes', 'Deleted {title}', { title: note.title })
+				label = this.t('notesplus', 'Deleted {title}', { title: note.title })
 			} else {
-				label = this.n('notes', 'Deleted {number} note', 'Deleted {number} notes', this.deletedNotes.length, { number: this.deletedNotes.length })
+				label = this.n('notesplus', 'Deleted {number} note', 'Deleted {number} notes', this.deletedNotes.length, { number: this.deletedNotes.length })
 			}
 			if (this.undoNotification === null) {
-				const action = '<button class="undo">' + this.t('notes', 'Undo Delete') + '</button>'
+				const action = '<button class="undo">' + this.t('notesplus', 'Undo Delete') + '</button>'
 				this.undoNotification = showSuccess(
 					'<span class="deletedLabel">' + label + '</span> ' + action,
 					{ isHTML: true, timeout: TOAST_PERMANENT_TIMEOUT, onRemove: this.onUndoNotificationClosed },
@@ -300,9 +300,9 @@ export default {
 			this.deletedNotes.forEach((note) => undoDeleteNote(note))
 			this.onRemoveUndoNotification()
 			if (number === 1) {
-				showSuccess(this.t('notes', 'Note recovered'))
+				showSuccess(this.t('notesplus', 'Note recovered'))
 			} else {
-				showSuccess(this.n('notes', 'Recovered {number} note', 'Recovered {number} notes', number, { number }))
+				showSuccess(this.n('notesplus', 'Recovered {number} note', 'Recovered {number} notes', number, { number }))
 			}
 		},
 
@@ -325,7 +325,7 @@ export default {
 		onClose(event) {
 			if (!this.notes.every((note) => !note.unsaved)) {
 				event.preventDefault()
-				return this.t('notes', 'There are unsaved notes. Leaving the page will discard all changes!')
+				return this.t('notesplus', 'There are unsaved notes. Leaving the page will discard all changes!')
 			}
 		},
 	},

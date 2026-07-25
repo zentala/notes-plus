@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "Beležka",
     "Create new note" : "Ustvari novo zabeležko",

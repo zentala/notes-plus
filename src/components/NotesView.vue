@@ -11,12 +11,12 @@
 					<div class="content-list__actions">
 						<NcButton variant="primary" :disabled="creatingNote" @click="onNewNote">
 							<PlusIcon slot="icon" :size="20" />
-							{{ t('notes', 'New note') }}
+							{{ t('notesplus', 'New note') }}
 						</NcButton>
 					</div>
 					<NcTextField
 						v-model="searchText"
-						:label="t('notes', 'Search for notes')"
+						:label="t('notesplus', 'Search for notes')"
 						:show-trailing-button="searchText !== ''"
 						trailing-button-icon="close"
 						:trailing-button-label="t('Clear search')"
@@ -52,11 +52,11 @@
 					v-observe-visibility="onEndOfNotes"
 					class="loading-label"
 				>
-					{{ t('notes', 'Loading …') }}
+					{{ t('notesplus', 'Loading …') }}
 				</div>
 				<div v-if="getFilteredTotalCount > 0" class="content-list__search-more">
 					<NcButton @click="onCategorySelected(null)">
-						{{ t('notes', 'Find in all categories') }}
+						{{ t('notesplus', 'Find in all categories') }}
 					</NcButton>
 				</div>
 			</NcAppContentList>
@@ -181,12 +181,12 @@ export default {
 			const now = new Date()
 			// define the time groups we want to allow
 			this.timeslots = [
-				{ t: new Date(now.getFullYear(), now.getMonth(), now.getDate()), l: t('notes', 'Today') },
-				{ t: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1), l: t('notes', 'Yesterday') },
-				{ t: new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()), l: t('notes', 'This week') },
-				{ t: new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 7), l: t('notes', 'Last week') },
-				{ t: new Date(now.getFullYear(), now.getMonth(), 1), l: t('notes', 'This month') },
-				{ t: new Date(now.getFullYear(), now.getMonth() - 1, 1), l: t('notes', 'Last month') },
+				{ t: new Date(now.getFullYear(), now.getMonth(), now.getDate()), l: t('notesplus', 'Today') },
+				{ t: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1), l: t('notesplus', 'Yesterday') },
+				{ t: new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()), l: t('notesplus', 'This week') },
+				{ t: new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 7), l: t('notesplus', 'Last week') },
+				{ t: new Date(now.getFullYear(), now.getMonth(), 1), l: t('notesplus', 'This month') },
+				{ t: new Date(now.getFullYear(), now.getMonth() - 1, 1), l: t('notesplus', 'Last month') },
 			]
 		},
 

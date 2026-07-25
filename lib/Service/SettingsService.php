@@ -7,9 +7,9 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Service;
+namespace OCA\NotesPlus\Service;
 
-use OCA\Notes\AppInfo\Application;
+use OCA\NotesPlus\AppInfo\Application;
 use OCP\App\IAppManager;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;

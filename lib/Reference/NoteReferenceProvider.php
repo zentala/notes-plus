@@ -5,10 +5,10 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Reference;
+namespace OCA\NotesPlus\Reference;
 
-use OCA\Notes\Service\NoteDoesNotExistException;
-use OCA\Notes\Service\NotesService;
+use OCA\NotesPlus\Service\NoteDoesNotExistException;
+use OCA\NotesPlus\Service\NotesService;
 use OCP\Collaboration\Reference\ADiscoverableReferenceProvider;
 use OCP\Collaboration\Reference\IReference;
 use OCP\Collaboration\Reference\Reference;
@@ -32,7 +32,7 @@ class NoteReferenceProvider extends ADiscoverableReferenceProvider {
 		LoggerInterface $logger,
 	) {
 		$this->userId = $userSession->getUser()?->getUID();
-		$this->l10n = $l10n->get('notes');
+		$this->l10n = $l10n->get('notesplus');
 		$this->logger = $logger;
 	}
 
@@ -41,8 +41,8 @@ class NoteReferenceProvider extends ADiscoverableReferenceProvider {
 	}
 
 	private function getNoteLinkId(string $referenceText): ?int {
-		$start = $this->urlGenerator->getAbsoluteURL('/apps/notes/note/');
-		$startIndex = $this->urlGenerator->getAbsoluteURL('/index.php/apps/notes/note/');
+		$start = $this->urlGenerator->getAbsoluteURL('/apps/notesplus/note/');
+		$startIndex = $this->urlGenerator->getAbsoluteURL('/index.php/apps/notesplus/note/');
 
 		foreach ([$start, $startIndex] as $url) {
 			preg_match('/^' . preg_quote($url, '/') . '([0-9]+)$/', $referenceText, $matches);
@@ -84,7 +84,7 @@ class NoteReferenceProvider extends ADiscoverableReferenceProvider {
 	}
 
 	public function getId(): string {
-		return 'notes' ;
+		return 'notesplus' ;
 	}
 
 	public function getTitle(): string {
@@ -96,6 +96,6 @@ class NoteReferenceProvider extends ADiscoverableReferenceProvider {
 	}
 
 	public function getIconUrl(): string {
-		return $this->urlGenerator->imagePath('notes', 'notes.svg');
+		return $this->urlGenerator->imagePath('notesplus', 'notes.svg');
 	}
 }

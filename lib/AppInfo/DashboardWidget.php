@@ -7,10 +7,10 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\AppInfo;
+namespace OCA\NotesPlus\AppInfo;
 
-use OCA\Notes\Service\Note;
-use OCA\Notes\Service\NotesService;
+use OCA\NotesPlus\Service\Note;
+use OCA\NotesPlus\Service\NotesService;
 use OCP\Dashboard\IAPIWidget;
 use OCP\Dashboard\IButtonWidget;
 use OCP\Dashboard\IIconWidget;
@@ -39,7 +39,7 @@ class DashboardWidget implements IWidget, IButtonWidget, IAPIWidget, IIconWidget
 	 * @inheritDoc
 	 */
 	public function getId(): string {
-		return 'notes';
+		return 'notesplus';
 	}
 
 	/**
@@ -67,28 +67,28 @@ class DashboardWidget implements IWidget, IButtonWidget, IAPIWidget, IIconWidget
 	 * @inheritDoc
 	 */
 	public function getUrl(): ?string {
-		return $this->url->linkToRouteAbsolute('notes.page.index');
+		return $this->url->linkToRouteAbsolute('notesplus.page.index');
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function load(): void {
-		\OCP\Util::addScript('notes', 'notes-dashboard');
+		\OCP\Util::addScript('notesplus', 'notes-dashboard');
 	}
 
 	public function getWidgetButtons(string $userId): array {
 		$buttons = [
 			new WidgetButton(
 				WidgetButton::TYPE_NEW,
-				$this->url->linkToRouteAbsolute('notes.page.createGet'),
+				$this->url->linkToRouteAbsolute('notesplus.page.createGet'),
 				$this->l10n->t('Create new note')
 			)
 		];
 		if ($this->notesService->countNotes($userId) > 7) {
 			$buttons[] = new WidgetButton(
 				WidgetButton::TYPE_MORE,
-				$this->url->linkToRouteAbsolute('notes.page.index'),
+				$this->url->linkToRouteAbsolute('notesplus.page.index'),
 				$this->l10n->t('More notes')
 			);
 		}
@@ -104,7 +104,7 @@ class DashboardWidget implements IWidget, IButtonWidget, IAPIWidget, IIconWidget
 				$excerpt = $note->getExcerpt();
 			} catch (\Throwable $e) {
 			}
-			$link = $this->url->linkToRouteAbsolute('notes.page.indexnote', ['id' => $note->getId()]);
+			$link = $this->url->linkToRouteAbsolute('notesplus.page.indexnote', ['id' => $note->getId()]);
 			$icon = $note->getFavorite()
 				? $this->url->getAbsoluteURL($this->url->imagePath('core', 'actions/starred.svg'))
 				: $this->getIconUrl();
@@ -113,6 +113,6 @@ class DashboardWidget implements IWidget, IButtonWidget, IAPIWidget, IIconWidget
 	}
 
 	public function getIconUrl(): string {
-		return $this->url->getAbsoluteURL($this->url->imagePath('notes', 'notes-dark.svg'));
+		return $this->url->getAbsoluteURL($this->url->imagePath('notesplus', 'notes-dark.svg'));
 	}
 }

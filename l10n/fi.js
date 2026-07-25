@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "Muistiinpanot",
     "Create new note" : "Luo uusi muistiinpano",

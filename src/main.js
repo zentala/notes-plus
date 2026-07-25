@@ -8,7 +8,7 @@ import App from './App.vue'
 import router from './router.js'
 
 __webpack_nonce__ = btoa(OC.requestToken)
-__webpack_public_path__ = OC.linkTo('notes', 'js/') // eslint-disable-line
+__webpack_public_path__ = OC.linkTo('notesplus', 'js/') // eslint-disable-line
 
 Vue.mixin({ methods: { t, n } })
 

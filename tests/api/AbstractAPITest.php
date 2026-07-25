@@ -7,7 +7,7 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Tests\API;
+namespace OCA\NotesPlus\Tests\API;
 
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +31,7 @@ abstract class AbstractAPITest extends TestCase {
 	protected function setUp() : void {
 		$v = $this->getAPIMajorVersion();
 		$this->http = new \GuzzleHttp\Client([
-			'base_uri' => 'http://localhost:8080/index.php/apps/notes/api/v' . $v . '/',
+			'base_uri' => 'http://localhost:8080/index.php/apps/notesplus/api/v' . $v . '/',
 			'auth' => ['test', 'test'],
 			'http_errors' => false,
 			'headers' => ['Accept' => 'application/json'],

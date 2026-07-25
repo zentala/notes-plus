@@ -7,7 +7,7 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Tests\API;
+namespace OCA\NotesPlus\Tests\API;
 
 class APIv02Test extends CommonAPITest {
 	public function __construct() {

@@ -7,7 +7,7 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Db;
+namespace OCA\NotesPlus\Db;
 
 use OCP\AppFramework\Db\Entity;
 
@@ -25,7 +25,7 @@ use OCP\AppFramework\Db\Entity;
  * @method void setContentEtag(string $value)
  * @method string getFileEtag()
  * @method void setFileEtag(string $value)
- * @package OCA\Notes\Db
+ * @package OCA\NotesPlus\Db
  */
 class Meta extends Entity {
 	protected $userId;

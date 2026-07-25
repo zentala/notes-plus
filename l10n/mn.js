@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "Тэмдэглэл",
     "Create new note" : "Шинэ тэмдэглэл үүсгэх",

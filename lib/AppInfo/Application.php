@@ -7,10 +7,10 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\AppInfo;
+namespace OCA\NotesPlus\AppInfo;
 
-use OCA\Notes\Listener\NoteFileEventsListener;
-use OCA\Notes\Reference\NoteReferenceProvider;
+use OCA\NotesPlus\Listener\NoteFileEventsListener;
+use OCA\NotesPlus\Reference\NoteReferenceProvider;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
@@ -25,7 +25,7 @@ use OCP\Share\Events\BeforeShareCreatedEvent;
 /** @phan-suppress-next-line PhanUnreferencedUseNormal */
 
 class Application extends App implements IBootstrap {
-	public const APP_ID = 'notes';
+	public const APP_ID = 'notesplus';
 	public static array $API_VERSIONS = [ '0.2', '1.3', '1.4' ];
 
 	public function __construct(array $urlParams = []) {

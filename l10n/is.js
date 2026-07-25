@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "Minnispunktar",
     "Create new note" : "Búa til nýjan minnispunkt",

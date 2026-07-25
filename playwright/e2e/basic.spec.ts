@@ -14,12 +14,12 @@ test.describe('Basic checks', () => {
 	})
 
 	test('Notes app is visible', async ({ page }) => {
-		await page.goto('/index.php/apps/notes/')
+		await page.goto('/index.php/apps/notesplus/')
 		await expect(page).toHaveTitle(/Notes/)
 	})
 
 	test('Create note and type', async ({ page }) => {
-		await page.goto('/index.php/apps/notes/')
+		await page.goto('/index.php/apps/notesplus/')
 		const previousNoteId = currentNoteId(page)
 		await expect(newNoteButton(page)).toBeVisible()
 		await newNoteButton(page).click()
@@ -31,7 +31,7 @@ test.describe('Basic checks', () => {
 	})
 
 	test('Open share sidebar from note actions', async ({ page }) => {
-		await page.goto('/index.php/apps/notes/')
+		await page.goto('/index.php/apps/notesplus/')
 		const previousNoteId = currentNoteId(page)
 		await newNoteButton(page).click()
 		const noteId = await waitForNoteRoute(page, previousNoteId)
@@ -52,7 +52,7 @@ test.describe('Basic checks', () => {
 	})
 
 	test('persists note content after a reload', async ({ page }) => {
-		await page.goto('/index.php/apps/notes/')
+		await page.goto('/index.php/apps/notesplus/')
 		const previousNoteId = currentNoteId(page)
 		await newNoteButton(page).click()
 		const noteId = await waitForNoteRoute(page, previousNoteId)
@@ -71,7 +71,7 @@ test.describe('Basic checks', () => {
 	})
 
 	test('filters notes with the search field', async ({ page }) => {
-		await page.goto('/index.php/apps/notes/')
+		await page.goto('/index.php/apps/notesplus/')
 
 		const uniqueWord = `Findme${Date.now()}`
 		const previousNoteId = currentNoteId(page)

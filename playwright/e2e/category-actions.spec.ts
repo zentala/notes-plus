@@ -44,7 +44,7 @@ async function expectNavigationItemActive(page: Page, name: string): Promise<voi
 }
 
 async function openNotesApp(page: Page): Promise<void> {
-	await page.goto('/index.php/apps/notes/')
+	await page.goto('/index.php/apps/notesplus/')
 	await expect(newCategoryButton(page)).toBeVisible()
 	await expect(newNoteButton(page)).toHaveCount(1)
 	await expect(newNoteButton(page)).toBeVisible()
@@ -150,7 +150,7 @@ test.describe('Category actions', () => {
 test.describe('Drag and drop', () => {
 	test.beforeEach(async ({ page }) => {
 		await login(page)
-		await page.goto('/index.php/apps/notes/')
+		await page.goto('/index.php/apps/notesplus/')
 		await expect(newCategoryButton(page)).toBeVisible()
 	})
 

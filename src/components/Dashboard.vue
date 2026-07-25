@@ -7,7 +7,7 @@
 	<div class="dashboard-box">
 		<NcDashboardWidget
 			empty-content-icon="icon-notes"
-			:empty-content-message="t('notes', 'No notes yet')"
+			:empty-content-message="t('notesplus', 'No notes yet')"
 			:items="items"
 			:loading="loading"
 		>
@@ -27,7 +27,7 @@
 		<div v-if="!loading" class="buttons-footer">
 			<NcButton :href="createNoteUrl">
 				<Plus slot="icon" :size="20" />
-				{{ t('notes', 'New note') }}
+				{{ t('notesplus', 'New note') }}
 			</NcButton>
 		</div>
 	</div>
@@ -62,7 +62,7 @@ export default {
 
 	computed: {
 		showMoreUrl() {
-			return this.hasMoreItems ? generateUrl('/apps/notes') : null
+			return this.hasMoreItems ? generateUrl('/apps/notesplus') : null
 		},
 
 		hasFavorites() {
@@ -70,12 +70,12 @@ export default {
 		},
 
 		createNoteUrl() {
-			return generateUrl('/apps/notes/new')
+			return generateUrl('/apps/notesplus/new')
 		},
 
 		getItemTargetUrl() {
 			return (note) => {
-				return generateUrl(`/apps/notes/note/${note.id}`)
+				return generateUrl(`/apps/notesplus/note/${note.id}`)
 			}
 		},
 	},

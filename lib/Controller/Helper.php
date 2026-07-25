@@ -7,15 +7,15 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Controller;
+namespace OCA\NotesPlus\Controller;
 
-use OCA\Notes\AppInfo\Application;
-use OCA\Notes\Db\Meta;
-use OCA\Notes\Service\MetaNote;
-use OCA\Notes\Service\MetaService;
-use OCA\Notes\Service\Note;
-use OCA\Notes\Service\NotesService;
-use OCA\Notes\Service\Util;
+use OCA\NotesPlus\AppInfo\Application;
+use OCA\NotesPlus\Db\Meta;
+use OCA\NotesPlus\Service\MetaNote;
+use OCA\NotesPlus\Service\MetaService;
+use OCA\NotesPlus\Service\Note;
+use OCA\NotesPlus\Service\NotesService;
+use OCA\NotesPlus\Service\Util;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
@@ -134,15 +134,15 @@ class Helper {
 		try {
 			$data = Util::retryIfLocked($respond);
 			$response = $data instanceof JSONResponse ? $data : new JSONResponse($data);
-		} catch (\OCA\Notes\Controller\ETagDoesNotMatchException $e) {
+		} catch (\OCA\NotesPlus\Controller\ETagDoesNotMatchException $e) {
 			$response = new JSONResponse($this->getNoteData($e->note), Http::STATUS_PRECONDITION_FAILED);
-		} catch (\OCA\Notes\Service\NoteDoesNotExistException $e) {
+		} catch (\OCA\NotesPlus\Service\NoteDoesNotExistException $e) {
 			$this->logException($e);
 			$response = $this->createErrorResponse(Http::STATUS_NOT_FOUND);
-		} catch (\OCA\Notes\Service\InsufficientStorageException $e) {
+		} catch (\OCA\NotesPlus\Service\InsufficientStorageException $e) {
 			$this->logException($e);
 			$response = $this->createErrorResponse(Http::STATUS_INSUFFICIENT_STORAGE);
-		} catch (\OCA\Notes\Service\NoteNotWritableException $e) {
+		} catch (\OCA\NotesPlus\Service\NoteNotWritableException $e) {
 			$this->logException($e);
 			$response = $this->createErrorResponse(Http::STATUS_FORBIDDEN);
 		} catch (\OCP\Lock\LockedException $e) {

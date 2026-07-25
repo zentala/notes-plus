@@ -45,7 +45,7 @@ export default defineConfig({
 		reuseExistingServer: !process.env.CI,
 		stderr: "pipe",
 		stdout: "pipe",
-		url: "http://127.0.0.1:8089/index.php/apps/notes/",
+		url: "http://127.0.0.1:8089/index.php/apps/notesplus/",
 		timeout: 5 * 60 * 1000, // max. 5 minutes for creating the container
 		wait: {
 			// we wait for this line to appear in the output of the webserver until consider it done

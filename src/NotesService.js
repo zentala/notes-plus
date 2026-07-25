@@ -20,19 +20,19 @@ function handleSyncError(message, err = null) {
 		const statusCode = err.response?.status
 		switch (statusCode) {
 			case 404:
-				showError(message + ' ' + t('notes', 'Note not found.'))
+				showError(message + ' ' + t('notesplus', 'Note not found.'))
 				break
 			case 423:
-				showError(message + ' ' + t('notes', 'Note is locked.'))
+				showError(message + ' ' + t('notesplus', 'Note is locked.'))
 				break
 			case 507:
-				showError(message + ' ' + t('notes', 'Insufficient storage.'))
+				showError(message + ' ' + t('notesplus', 'Insufficient storage.'))
 				break
 			default:
 				showError(message + ' HTTP ' + statusCode + ' (' + err.response.data?.errorType + ')')
 		}
 	} else {
-		showError(message + ' ' + t('notes', 'See JavaScript console and server log for details.'))
+		showError(message + ' ' + t('notesplus', 'See JavaScript console and server log for details.'))
 	}
 }
 
@@ -46,7 +46,7 @@ export function setSettings(settings) {
 		})
 		.catch((err) => {
 			logger.error('Updating settings has failed', { error: err })
-			handleSyncError(t('notes', 'Updating settings has failed.'), err)
+			handleSyncError(t('notesplus', 'Updating settings has failed.'), err)
 			throw err
 		})
 }
@@ -68,7 +68,7 @@ export function getDashboardData() {
 		})
 		.catch((err) => {
 			logger.error('Fetching notes for dashboard has failed', { error: err })
-			handleSyncError(t('notes', 'Fetching notes for dashboard has failed.'), err)
+			handleSyncError(t('notesplus', 'Fetching notes for dashboard has failed.'), err)
 			throw err
 		})
 }
@@ -94,7 +94,7 @@ export function fetchNotes() {
 				store.notes.updateNotes({ noteIds: response.data.noteIds, notes: response.data.notesData })
 			}
 			if (response.data.errorMessage) {
-				showError(t('notes', 'Error from Nextcloud server: {msg}', { msg: response.data.errorMessage }))
+				showError(t('notesplus', 'Error from Nextcloud server: {msg}', { msg: response.data.errorMessage }))
 			} else {
 				store.sync.setSyncETag(response.headers.etag)
 				store.sync.setSyncLastModified(response.headers['last-modified'])
@@ -107,7 +107,7 @@ export function fetchNotes() {
 				return null
 			} else {
 				logger.error('Fetching notes has failed', { error: err })
-				handleSyncError(t('notes', 'Fetching notes has failed.'), err)
+				handleSyncError(t('notesplus', 'Fetching notes has failed.'), err)
 				throw err
 			}
 		})
@@ -129,7 +129,7 @@ export function fetchNote(noteId) {
 				throw err
 			} else {
 				logger.error('Fetching note has failed', { noteId, error: err })
-				const msg = t('notes', 'Fetching note {id} has failed.', { id: noteId })
+				const msg = t('notesplus', 'Fetching note {id} has failed.', { id: noteId })
 				store.notes.setNoteAttribute({ noteId, attribute: 'error', value: true })
 				store.notes.setNoteAttribute({ noteId, attribute: 'errorType', value: msg })
 				return store.notes.getNote(noteId)
@@ -173,7 +173,7 @@ export function refreshNote(noteId, lastETag) {
 				return null
 			} else {
 				logger.error('Refreshing note has failed', { noteId, error: err })
-				handleSyncError(t('notes', 'Refreshing note {id} has failed.', { id: noteId }), err)
+				handleSyncError(t('notesplus', 'Refreshing note {id} has failed.', { id: noteId }), err)
 			}
 			return null
 		})
@@ -189,7 +189,7 @@ export function setTitle(noteId, title) {
 		})
 		.catch((err) => {
 			logger.error('Renaming note has failed', { noteId, error: err })
-			handleSyncError(t('notes', 'Renaming note {id} has failed.', { id: noteId }), err)
+			handleSyncError(t('notesplus', 'Renaming note {id} has failed.', { id: noteId }), err)
 			throw err
 		})
 }
@@ -207,7 +207,7 @@ export function createNote(category, title, content) {
 		})
 		.catch((err) => {
 			logger.error('Creating new note has failed', { error: err })
-			handleSyncError(t('notes', 'Creating new note has failed.'), err)
+			handleSyncError(t('notesplus', 'Creating new note has failed.'), err)
 			throw err
 		})
 }
@@ -267,7 +267,7 @@ function _updateNote(note) {
 			} else {
 				store.notes.setNoteAttribute({ noteId: note.id, attribute: 'saveError', value: true })
 				logger.error('Saving note has failed', { noteId: note.id, error: err })
-				handleSyncError(t('notes', 'Saving note {id} has failed.', { id: note.id }), err)
+				handleSyncError(t('notesplus', 'Saving note {id} has failed.', { id: note.id }), err)
 			}
 		})
 }
@@ -296,7 +296,7 @@ export function autotitleNote(noteId) {
 		})
 		.catch((err) => {
 			logger.error('Updating title for note has failed', { noteId, error: err })
-			handleSyncError(t('notes', 'Updating title for note {id} has failed.', { id: noteId }), err)
+			handleSyncError(t('notesplus', 'Updating title for note {id} has failed.', { id: noteId }), err)
 		})
 }
 
@@ -309,7 +309,7 @@ export function undoDeleteNote(note) {
 		})
 		.catch((err) => {
 			logger.error('Undo delete has failed for note', { title: note.title, error: err })
-			handleSyncError(t('notes', 'Undo delete has failed for note {title}.', { title: note.title }), err)
+			handleSyncError(t('notesplus', 'Undo delete has failed for note {title}.', { title: note.title }), err)
 			throw err
 		})
 }
@@ -320,7 +320,7 @@ export async function deleteNote(noteId, onNoteDeleted) {
 		await axios.delete(url('/notes/' + noteId))
 	} catch (err) {
 		logger.error('Deleting note has failed', { noteId, error: err })
-		handleSyncError(t('notes', 'Deleting note {id} has failed.', { id: noteId }), err)
+		handleSyncError(t('notesplus', 'Deleting note {id} has failed.', { id: noteId }), err)
 	}
 	// remove note always since we don't know when exactly the error happened
 	// (note could be deleted on server even if an error was thrown)
@@ -336,7 +336,7 @@ export function setFavorite(noteId, favorite) {
 		})
 		.catch((err) => {
 			logger.error('Toggling favorite for note has failed', { noteId, error: err })
-			handleSyncError(t('notes', 'Toggling favorite for note {id} has failed.', { id: noteId }), err)
+			handleSyncError(t('notesplus', 'Toggling favorite for note {id} has failed.', { id: noteId }), err)
 			throw err
 		})
 }
@@ -347,13 +347,13 @@ export function setCategory(noteId, category) {
 		.then((response) => {
 			const realCategory = response.data
 			if (category !== realCategory) {
-				handleSyncError(t('notes', 'Updating the note\'s category has failed. Is the target directory writable?'))
+				handleSyncError(t('notesplus', 'Updating the note\'s category has failed. Is the target directory writable?'))
 			}
 			store.notes.setNoteAttribute({ noteId, attribute: 'category', value: realCategory })
 		})
 		.catch((err) => {
 			logger.error('Updating the category for note has failed', { noteId, error: err })
-			handleSyncError(t('notes', 'Updating the category for note {id} has failed.', { id: noteId }), err)
+			handleSyncError(t('notesplus', 'Updating the category for note {id} has failed.', { id: noteId }), err)
 			throw err
 		})
 }
@@ -366,7 +366,7 @@ export function renameCategory(oldCategory, newCategory) {
 		})
 		.catch((err) => {
 			logger.error('Renaming category has failed', { oldCategory, error: err })
-			handleSyncError(t('notes', 'Renaming category "{category}" has failed.', { category: oldCategory }), err)
+			handleSyncError(t('notesplus', 'Renaming category "{category}" has failed.', { category: oldCategory }), err)
 			throw err
 		})
 }
@@ -379,7 +379,7 @@ export function deleteCategory(category) {
 		})
 		.catch((err) => {
 			logger.error('Deleting category has failed', { category, error: err })
-			handleSyncError(t('notes', 'Deleting category "{category}" has failed.', { category }), err)
+			handleSyncError(t('notesplus', 'Deleting category "{category}" has failed.', { category }), err)
 			throw err
 		})
 }

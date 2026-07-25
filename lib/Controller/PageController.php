@@ -8,12 +8,12 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Controller;
+namespace OCA\NotesPlus\Controller;
 
 use OCA\Files\Event\LoadSidebar;
-use OCA\Notes\AppInfo\Application;
-use OCA\Notes\Service\NotesService;
-use OCA\Notes\Service\SettingsService;
+use OCA\NotesPlus\AppInfo\Application;
+use OCA\NotesPlus\Service\NotesService;
+use OCA\NotesPlus\Service\SettingsService;
 use OCA\Text\Event\LoadEditor;
 use OCA\Viewer\Event\LoadViewer;
 use OCP\App\IAppManager;
@@ -110,7 +110,7 @@ class PageController extends Controller {
 	public function createPost() : RedirectResponse {
 		$note = $this->notesService->create($this->userSession->getUser()?->getUID() ?? '', '', '');
 		$note->setContent('');
-		$url = $this->urlGenerator->linkToRoute('notes.page.indexnote', [ 'id' => $note->getId() ]);
+		$url = $this->urlGenerator->linkToRoute('notesplus.page.indexnote', [ 'id' => $note->getId() ]);
 		return new RedirectResponse($url . '?new');
 	}
 }

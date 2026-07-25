@@ -7,9 +7,9 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Migration;
+namespace OCA\NotesPlus\Migration;
 
-use OCA\Notes\AppInfo\Application;
+use OCA\NotesPlus\AppInfo\Application;
 use OCP\IConfig;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -28,7 +28,7 @@ class EditorHint implements IRepairStep {
 	}
 
 	public function run(IOutput $output) {
-		$appVersion = $this->config->getAppValue('notes', 'installed_version');
+		$appVersion = $this->config->getAppValue('notesplus', 'installed_version');
 
 		if (!$appVersion || version_compare($appVersion, '4.7.0') !== -1) {
 			return;

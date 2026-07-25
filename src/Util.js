@@ -26,7 +26,7 @@ export function copyNote(from, to, exclude) {
 }
 
 export function categoryLabel(category) {
-	return category === '' ? t('notes', 'Uncategorized') : category.replace(/\//g, ' / ')
+	return category === '' ? t('notesplus', 'Uncategorized') : category.replace(/\//g, ' / ')
 }
 
 export function routeIsNewNote($route) {
@@ -96,37 +96,37 @@ export function getDraggedNoteId(event, getNoteById) {
 }
 
 export function getDefaultSampleNoteTitle() {
-	return t('notes', 'Sample note')
+	return t('notesplus', 'Sample note')
 }
 
 /* eslint-disable @stylistic/indent-binary-ops */
 export function getDefaultSampleNote() {
 	return '# ' + getDefaultSampleNoteTitle() + `
 
-* 📅 ` + t('notes', '15 January 2021, via Nextcloud Notes') + `
-* 👥 ` + t('notes', 'Me, you, and all our friends!') + `
+* 📅 ` + t('notesplus', '15 January 2021, via Nextcloud Notes') + `
+* 👥 ` + t('notesplus', 'Me, you, and all our friends!') + `
 
-## ` + t('notes', 'Tasks') + ` ✅
+## ` + t('notesplus', 'Tasks') + ` ✅
 
-* [ ] ` + t('notes', 'Write nice todo lists') + `
-* [ ] ` + t('notes', 'Buy Fries') + `
+* [ ] ` + t('notesplus', 'Write nice todo lists') + `
+* [ ] ` + t('notesplus', 'Buy Fries') + `
 * [ ] …
 
-## ` + t('notes', 'Birthdays') + `
+## ` + t('notesplus', 'Birthdays') + `
 
-* ` + t('notes', 'Jen, in three days!') + `
-* ` + t('notes', 'Moss, 21.03.1973') + `
-* ` + t('notes', 'Roy, 1979') + `
+* ` + t('notesplus', 'Jen, in three days!') + `
+* ` + t('notesplus', 'Moss, 21.03.1973') + `
+* ` + t('notesplus', 'Roy, 1979') + `
 
-## ` + t('notes', 'Review Steps') + ` 🔁
+## ` + t('notesplus', 'Review Steps') + ` 🔁
 
-1. ` + t('notes', 'Turn PC off') + `
-2. ` + t('notes', 'Turn PC on') + `
-3. ` + t('notes', 'Then call IT') + `
+1. ` + t('notesplus', 'Turn PC off') + `
+2. ` + t('notesplus', 'Turn PC on') + `
+3. ` + t('notesplus', 'Then call IT') + `
 
-## ` + t('notes', 'Quotes') + ` 💬
+## ` + t('notesplus', 'Quotes') + ` 💬
 
-> ` + t('notes', 'Nextcloud, a safe home for all your data') + `
+> ` + t('notesplus', 'Nextcloud, a safe home for all your data') + `
 `
 }
 /* eslint-enable @stylistic/indent-binary-ops */

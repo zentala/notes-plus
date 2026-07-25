@@ -8,12 +8,12 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\Controller;
+namespace OCA\NotesPlus\Controller;
 
-use OCA\Notes\Service\MetaNote;
-use OCA\Notes\Service\MetaService;
-use OCA\Notes\Service\NotesService;
-use OCA\Notes\Service\SettingsService;
+use OCA\NotesPlus\Service\MetaNote;
+use OCA\NotesPlus\Service\MetaService;
+use OCA\NotesPlus\Service\NotesService;
+use OCA\NotesPlus\Service\SettingsService;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\CORS;

@@ -5,17 +5,17 @@
 
 <template>
 	<NcAppSettingsDialog
-		:name="t('notes', 'Notes settings')"
+		:name="t('notesplus', 'Notes settings')"
 		:class="{ loading: saving }"
 		:show-navigation="true"
 		:open="settingsOpen"
 		:legacy="false"
 		@update:open="setSettingsOpen($event)"
 	>
-		<NcAppSettingsSection id="note-mode-section" :name="t('notes', 'General')">
+		<NcAppSettingsSection id="note-mode-section" :name="t('notesplus', 'General')">
 			<NcRadioGroup
 				v-model="settings.noteMode"
-				:label="t('notes', 'Display')"
+				:label="t('notesplus', 'Display')"
 				@update:modelValue="onChangeSettings"
 			>
 				<NcRadioGroupButton
@@ -36,8 +36,8 @@
 
 			<NcRadioGroup
 				v-model="settings.fileSuffix"
-				:label="t('notes', 'File extension')"
-				:description="t('notes', 'For new notes')"
+				:label="t('notesplus', 'File extension')"
+				:description="t('notesplus', 'For new notes')"
 				@update:modelValue="onChangeSettings"
 			>
 				<NcRadioGroupButton
@@ -49,14 +49,14 @@
 			</NcRadioGroup>
 			<NcTextField v-show="settings.fileSuffix === 'custom'"
 				id="customSuffix"
-				:label="t('notes', 'Custom file extension')"
+				:label="t('notesplus', 'Custom file extension')"
 				placeholder=".txt"
 				@change="onChangeSettings"
 			/>
 
-			<NcFormGroup :label="t('notes', 'Files')">
+			<NcFormGroup :label="t('notesplus', 'Files')">
 				<NcFormBox>
-					<NcFormBoxButton :label="t('notes', 'Notes folder')"
+					<NcFormBoxButton :label="t('notesplus', 'Notes folder')"
 						:description=" '/' + settings.notesPath"
 						inverted-accent
 						@click="onChangeNotePath"
@@ -69,11 +69,11 @@
 			</NcFormGroup>
 		</NcAppSettingsSection>
 
-		<NcAppSettingsSection :name="t('notes', 'Mobile apps')">
+		<NcAppSettingsSection :name="t('notesplus', 'Mobile apps')">
 			<HelpMobile />
 		</NcAppSettingsSection>
 
-		<NcAppSettingsShortcutsSection :name="t('notes', 'Shortcuts')">
+		<NcAppSettingsShortcutsSection :name="t('notesplus', 'Shortcuts')">
 			<NcHotkeyList>
 				<NcHotkey v-for="(item, index) in shortcuts"
 					:key="index"
@@ -137,30 +137,30 @@ export default {
 			extensions: [
 				{ value: '.md', label: '.md' },
 				{ value: '.txt', label: '.txt' },
-				{ value: 'custom', label: t('notes', 'Custom') },
+				{ value: 'custom', label: t('notesplus', 'Custom') },
 			],
 
 			noteModes: [
-				{ value: 'rich', label: t('notes', 'Rich text'), icon: 'NewspaperVariantOutlineIcon' },
-				{ value: 'edit', label: t('notes', 'Plain text'), icon: 'FormatAlignLeftIcon' },
-				{ value: 'preview', label: t('notes', 'Preview'), icon: 'EyeOutlineIcon' },
+				{ value: 'rich', label: t('notesplus', 'Rich text'), icon: 'NewspaperVariantOutlineIcon' },
+				{ value: 'edit', label: t('notesplus', 'Plain text'), icon: 'FormatAlignLeftIcon' },
+				{ value: 'preview', label: t('notesplus', 'Preview'), icon: 'EyeOutlineIcon' },
 			],
 
 			saving: false,
 			settingsOpen: this.open,
 			shortcuts: [
-				{ shortcut: 'Control B', action: t('notes', 'Make the selection bold') },
-				{ shortcut: 'Control I', action: t('notes', 'Make the selection italic') },
-				{ shortcut: 'Control +', action: t('notes', 'Wrap the selection in quotes') },
-				{ shortcut: 'Control Alt C', action: t('notes', 'The selection will be turned into monospace') },
-				{ shortcut: 'Control E', action: t('notes', 'Remove any styles from the selected text') },
-				{ shortcut: 'Control L', action: t('notes', 'Makes the current line a list element') },
-				{ shortcut: 'Control Alt L', action: t('notes', 'Makes the current line a list element with a number') },
-				{ shortcut: 'Control H', action: t('notes', 'Toggle heading for current line') },
-				{ shortcut: 'Control Shift H', action: t('notes', 'Set the current line as a big heading') },
-				{ shortcut: 'Control K', action: t('notes', 'Insert link') },
-				{ shortcut: 'Control Alt I', action: t('notes', 'Insert image') },
-				{ shortcut: 'Control /', action: t('notes', 'Switch between editor and viewer') },
+				{ shortcut: 'Control B', action: t('notesplus', 'Make the selection bold') },
+				{ shortcut: 'Control I', action: t('notesplus', 'Make the selection italic') },
+				{ shortcut: 'Control +', action: t('notesplus', 'Wrap the selection in quotes') },
+				{ shortcut: 'Control Alt C', action: t('notesplus', 'The selection will be turned into monospace') },
+				{ shortcut: 'Control E', action: t('notesplus', 'Remove any styles from the selected text') },
+				{ shortcut: 'Control L', action: t('notesplus', 'Makes the current line a list element') },
+				{ shortcut: 'Control Alt L', action: t('notesplus', 'Makes the current line a list element with a number') },
+				{ shortcut: 'Control H', action: t('notesplus', 'Toggle heading for current line') },
+				{ shortcut: 'Control Shift H', action: t('notesplus', 'Set the current line as a big heading') },
+				{ shortcut: 'Control K', action: t('notesplus', 'Insert link') },
+				{ shortcut: 'Control Alt I', action: t('notesplus', 'Insert image') },
+				{ shortcut: 'Control /', action: t('notesplus', 'Switch between editor and viewer') },
 			],
 		}
 	},
@@ -185,11 +185,11 @@ export default {
 
 	methods: {
 		async onChangeNotePath(event) {
-			const filePicker = getFilePickerBuilder(t('notes', 'Pick a notes folder'))
+			const filePicker = getFilePickerBuilder(t('notesplus', 'Pick a notes folder'))
 				.allowDirectories(true)
 				.startAt(event.target.value === '' ? '/' : event.target.value)
 				.addButton({
-					label: t('notes', 'Set notes folder'),
+					label: t('notesplus', 'Set notes folder'),
 					callback: (nodes) => {
 						const node = nodes[0]
 						this.settings.notesPath = node.path

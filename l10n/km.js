@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "notes",
+    "notesplus",
     {
     "Notes" : "កំណត់​ចំណាំ",
     "Error" : "កំហុស",

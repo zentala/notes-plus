@@ -7,11 +7,11 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Notes\AppInfo;
+namespace OCA\NotesPlus\AppInfo;
 
-use OCA\Notes\Service\Note;
-use OCA\Notes\Service\NotesService;
-use OCA\Notes\Service\Util;
+use OCA\NotesPlus\Service\Note;
+use OCA\NotesPlus\Service\NotesService;
+use OCA\NotesPlus\Service\Util;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\Search\IProvider;
@@ -69,7 +69,7 @@ class SearchProvider implements IProvider {
 					'',
 					$note->getTitle(),
 					$excerpt,
-					$this->url->linkToRouteAbsolute('notes.page.indexnote', [ 'id' => $note->getId() ]),
+					$this->url->linkToRouteAbsolute('notesplus.page.indexnote', [ 'id' => $note->getId() ]),
 					'icon-notes-trans'
 				);
 			},
