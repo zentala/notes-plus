@@ -54,3 +54,5 @@ nbproject
 .DS_Store
 
 test-results/
+# Private planning repo (nested git, private remote) — never published
+.plan/
