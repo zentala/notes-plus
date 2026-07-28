@@ -17,12 +17,14 @@ class Note {
 	private Folder $notesFolder;
 	private NoteUtil $noteUtil;
 	private Util $util;
+	private FrontMatter $frontMatter;
 
 	public function __construct(File $file, Folder $notesFolder, NoteUtil $noteUtil) {
 		$this->file = $file;
 		$this->notesFolder = $notesFolder;
 		$this->noteUtil = $noteUtil;
 		$this->util = $noteUtil->util;
+		$this->frontMatter = new FrontMatter();
 	}
 
 	public function getId() : int {
@@ -41,7 +43,12 @@ class Note {
 		return $subdir === false ? '' : $subdir;
 	}
 
-	public function getContent() : string {
+	/**
+	 * Raw, encoding-sanitized file content INCLUDING any front-matter fence.
+	 * Use getContent() for the editor-facing body; use this only when the
+	 * front-matter itself must be read or rewritten (ADR-007).
+	 */
+	private function getRawContent() : string {
 		$content = $this->file->getContent();
 		// blank files return false when using object storage as primary storage
 		if ($content === false && $this->file->getSize() === 0) {
@@ -58,6 +65,15 @@ class Note {
 		}
 		$content = str_replace([ pack('H*', 'FEFF'), pack('H*', 'FFEF'), pack('H*', 'EFBBBF') ], '', $content);
 		return $content;
+	}
+
+	public function getContent() : string {
+		return $this->frontMatter->parse($this->getRawContent())['body'];
+	}
+
+	public function getColor() : ?string {
+		$attrs = $this->frontMatter->parse($this->getRawContent())['attrs'];
+		return $attrs['color'] ?? null;
 	}
 
 	public function getExcerpt(int $maxlen = 100) : string {
@@ -104,6 +120,9 @@ class Note {
 		}
 		if (!in_array('favorite', $exclude)) {
 			$data['favorite'] = $this->getFavorite();
+		}
+		if (!in_array('color', $exclude)) {
+			$data['color'] = $this->getColor();
 		}
 		if (!in_array('readonly', $exclude)) {
 			$data['readonly'] = $this->getReadOnly();
@@ -170,8 +189,29 @@ class Note {
 
 	public function setContent(string $content) : void {
 		$this->noteUtil->ensureNoteIsWritable($this->file);
-		$this->noteUtil->ensureSufficientStorage($this->file->getParent(), strlen($content));
-		$this->file->putContent($content);
+		// preserve any front-matter we own (color, later tags) when the editor
+		// saves the body — the client never sees or sends the fence (ADR-007)
+		$attrs = $this->frontMatter->parse($this->getRawContent())['attrs'];
+		$raw = $this->frontMatter->serialize($attrs, $content);
+		$this->noteUtil->ensureSufficientStorage($this->file->getParent(), strlen($raw));
+		$this->file->putContent($raw);
+	}
+
+	public function setColor(?string $color) : void {
+		if ($color === $this->getColor()) {
+			return;
+		}
+		$this->noteUtil->ensureNoteIsWritable($this->file);
+		$parsed = $this->frontMatter->parse($this->getRawContent());
+		$attrs = $parsed['attrs'];
+		if ($color === null || $color === '') {
+			unset($attrs['color']);
+		} else {
+			$attrs['color'] = $color;
+		}
+		$raw = $this->frontMatter->serialize($attrs, $parsed['body']);
+		$this->noteUtil->ensureSufficientStorage($this->file->getParent(), strlen($raw));
+		$this->file->putContent($raw);
 	}
 
 	public function setModified(int $modified) : void {

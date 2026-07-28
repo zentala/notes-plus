@@ -239,6 +239,7 @@ class NotesController extends Controller {
 		?string $title = null,
 		?string $category = null,
 		?bool $favorite = null,
+		?string $color = null,
 	) : JSONResponse {
 		return $this->helper->handleErrorResponse(function () use (
 			$id,
@@ -246,7 +247,8 @@ class NotesController extends Controller {
 			$modified,
 			$title,
 			$category,
-			$favorite
+			$favorite,
+			$color
 		) {
 			$note = $this->notesService->get($this->helper->getUID(), $id);
 			$result = null;
@@ -284,6 +286,13 @@ class NotesController extends Controller {
 						$note->setFavorite($favorite);
 					}
 					$result = $note->getFavorite();
+					break;
+
+				case 'color':
+					if ($color !== null) {
+						$note->setColor($color === '' ? null : $color);
+					}
+					$result = $note->getColor();
 					break;
 
 				default:

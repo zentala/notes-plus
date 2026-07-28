@@ -109,8 +109,9 @@ class NotesApiController extends ApiController {
 		string $content = '',
 		int $modified = 0,
 		bool $favorite = false,
+		?string $color = null,
 	) : JSONResponse {
-		return $this->helper->handleErrorResponse(function () use ($category, $title, $content, $modified, $favorite) {
+		return $this->helper->handleErrorResponse(function () use ($category, $title, $content, $modified, $favorite, $color) {
 			$note = $this->service->create($this->helper->getUID(), $title, $category);
 			try {
 				$note->setContent($content);
@@ -119,6 +120,9 @@ class NotesApiController extends ApiController {
 				}
 				if ($favorite) {
 					$note->setFavorite($favorite);
+				}
+				if ($color !== null && $color !== '') {
+					$note->setColor($color);
 				}
 			} catch (\Throwable $e) {
 				// roll-back note creation
@@ -160,6 +164,7 @@ class NotesApiController extends ApiController {
 		?string $title = null,
 		?string $category = null,
 		?bool $favorite = null,
+		?string $color = null,
 	) : JSONResponse {
 		return $this->helper->handleErrorResponse(function () use (
 			$id,
@@ -167,7 +172,8 @@ class NotesApiController extends ApiController {
 			$modified,
 			$title,
 			$category,
-			$favorite
+			$favorite,
+			$color
 		) {
 			$note = $this->helper->getNoteWithETagCheck($id, $this->request);
 			if ($content !== null && $content !== $note->getContent()) {
@@ -183,6 +189,9 @@ class NotesApiController extends ApiController {
 			}
 			if ($favorite !== null && $favorite !== $note->getFavorite()) {
 				$note->setFavorite($favorite);
+			}
+			if ($color !== null && $color !== $note->getColor()) {
+				$note->setColor($color === '' ? null : $color);
 			}
 			return $this->helper->getNoteData($note);
 		});

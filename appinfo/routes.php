@@ -82,7 +82,7 @@ return ['routes' => [
 		'verb' => 'PUT',
 		'requirements' => [
 			'id' => '\d+',
-			'property' => '(modified|title|category|favorite)',
+			'property' => '(modified|title|category|favorite|color)',
 		],
 	],
 	[
