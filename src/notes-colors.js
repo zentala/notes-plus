@@ -28,9 +28,10 @@ export const noteColors = [
 ]
 
 /**
- * Normalize a stored color to a known swatch value, or null if unset/unknown.
- * Unknown-but-non-empty values (e.g. from a hand-edited file) are kept as-is so
- * we never silently drop a user's color.
+ * Normalize a stored color to a lower-case `#rrggbb`, or null when unset or not
+ * a valid hex. Guards the value before it is bound to a CSS custom property, so
+ * a malformed value (e.g. from a hand-edited file or a rogue API client) can
+ * never inject into the stylesheet.
  *
  * @param {string|null|undefined} color the stored color
  * @return {string|null}
@@ -39,5 +40,6 @@ export function normalizeColor(color) {
 	if (!color) {
 		return null
 	}
-	return color.toLowerCase()
+	const value = color.toLowerCase()
+	return /^#[0-9a-f]{6}$/.test(value) ? value : null
 }

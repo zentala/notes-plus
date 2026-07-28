@@ -52,10 +52,18 @@
 				</template>
 				{{ t('notesplus', 'Change color') }}
 			</NcActionButton>
-			<NoteColorPicker v-else
-				:value="note.color"
-				@select="onColorSelected"
-			/>
+			<template v-else>
+				<NcActionButton :close-after-click="false" @click="showColorSelect = false">
+					<template #icon>
+						<ChevronLeftIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Back') }}
+				</NcActionButton>
+				<NoteColorPicker
+					:value="note.color"
+					@select="onColorSelected"
+				/>
+			</template>
 
 			<NcActionButton v-if="!showCategorySelect" @click="showCategorySelect = true">
 				<template #icon>
@@ -118,6 +126,7 @@ import NcActionInput from '@nextcloud/vue/components/NcActionInput'
 import NcActionSeparator from '@nextcloud/vue/components/NcActionSeparator'
 import NcListItem from '@nextcloud/vue/components/NcListItem'
 import AlertOctagonOutlineIcon from 'vue-material-design-icons/AlertOctagonOutline.vue'
+import ChevronLeftIcon from 'vue-material-design-icons/ChevronLeft.vue'
 import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
 import PaletteOutlineIcon from 'vue-material-design-icons/PaletteOutline.vue'
 import PencilOutlineIcon from 'vue-material-design-icons/PencilOutline.vue'
@@ -125,6 +134,7 @@ import ShareVariantOutlineIcon from 'vue-material-design-icons/ShareVariantOutli
 import StarIcon from 'vue-material-design-icons/Star.vue'
 import NoteColorPicker from './NoteColorPicker.vue'
 import logger from '../Logger.js'
+import { normalizeColor } from '../notes-colors.js'
 import { deleteNote, fetchNote, setCategory, setColor, setFavorite, setTitle } from '../NotesService.js'
 import store from '../store.js'
 import { categoryLabel, routeIsNewNote } from '../Util.js'
@@ -134,6 +144,7 @@ export default {
 
 	components: {
 		AlertOctagonOutlineIcon,
+		ChevronLeftIcon,
 		FolderOutlineIcon,
 		NcActionButton,
 		NcListItem,
@@ -197,7 +208,8 @@ export default {
 		},
 
 		colorStyle() {
-			return this.note.color ? { '--np-note-color': this.note.color } : {}
+			const color = normalizeColor(this.note.color)
+			return color ? { '--np-note-color': color } : {}
 		},
 
 		actionFavoriteText() {
