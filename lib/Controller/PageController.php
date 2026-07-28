@@ -53,7 +53,7 @@ class PageController extends Controller {
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	public function index() : TemplateResponse {
-		$devMode = !is_file(dirname(__FILE__) . '/../../js/notes-main.js');
+		$devMode = !is_file(dirname(__FILE__) . '/../../js/notesplus-main.js');
 		$response = new TemplateResponse(
 			$this->appName,
 			$devMode ? 'dev-mode' : 'main',

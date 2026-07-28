@@ -15,7 +15,7 @@ use OCP\IDBConnection;
 
 class MetaMapper extends QBMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'notes_meta');
+		parent::__construct($db, 'notesplus_meta');
 	}
 
 	public function getAll($userId) : array {

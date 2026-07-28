@@ -33,8 +33,8 @@ class Version3005Date20200528204430 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
-		if ($schema->hasTable('notes_meta')) {
-			$schema->dropTable('notes_meta');
+		if ($schema->hasTable('notesplus_meta')) {
+			$schema->dropTable('notesplus_meta');
 		}
 
 		return $schema;

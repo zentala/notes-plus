@@ -33,7 +33,7 @@ class Version3005Date20200528204431 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
-		$table = $schema->createTable('notes_meta');
+		$table = $schema->createTable('notesplus_meta');
 		$table->addColumn('id', 'integer', [
 			'autoincrement' => true,
 			'notnull' => true,
@@ -61,9 +61,9 @@ class Version3005Date20200528204431 extends SimpleMigrationStep {
 			'length' => 40,
 		]);
 		$table->setPrimaryKey(['id']);
-		$table->addIndex(['file_id'], 'notes_meta_file_id_index');
-		$table->addIndex(['user_id'], 'notes_meta_user_id_index');
-		$table->addUniqueIndex(['file_id', 'user_id'], 'notes_meta_file_user_index');
+		$table->addIndex(['file_id'], 'notesplus_meta_fileid_idx');
+		$table->addIndex(['user_id'], 'notesplus_meta_userid_idx');
+		$table->addUniqueIndex(['file_id', 'user_id'], 'notesplus_meta_fuser_idx');
 
 		return $schema;
 	}

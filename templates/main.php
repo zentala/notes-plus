@@ -7,5 +7,5 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-script('notesplus', 'notes-main');
-style('notesplus', 'notes');
+script('notesplus', 'notesplus-main');
+style('notesplus', 'notesplus');

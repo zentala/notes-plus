@@ -74,7 +74,7 @@ class DashboardWidget implements IWidget, IButtonWidget, IAPIWidget, IIconWidget
 	 * @inheritDoc
 	 */
 	public function load(): void {
-		\OCP\Util::addScript('notesplus', 'notes-dashboard');
+		\OCP\Util::addScript('notesplus', 'notesplus-dashboard');
 	}
 
 	public function getWidgetButtons(string $userId): array {
