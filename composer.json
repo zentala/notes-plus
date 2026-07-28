@@ -11,7 +11,9 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
+			"OCA\\NotesPlus\\": "lib/",
 			"OCA\\NotesPlus\\Tests\\API\\": "tests/api/",
+			"OCA\\NotesPlus\\Tests\\Unit\\": "tests/unit/",
 			"OCP\\": "vendor/nextcloud/ocp/OCP/",
 			"OC\\": "vendor/nextcloud/ocp/OC/"
 		}

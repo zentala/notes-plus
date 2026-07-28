@@ -6,7 +6,7 @@ app_name=notesplus
 project_dir=$(CURDIR)/../$(app_name)
 build_dir=$(CURDIR)/build/artifacts
 cert_dir=$(HOME)/.nextcloud/certificates
-php_dirs=appinfo/ lib/ tests/api/
+php_dirs=appinfo/ lib/ tests/api/ tests/unit/
 
 
 all: dev-setup build
@@ -87,7 +87,10 @@ watch-js:
 
 ##### Testing #####
 
-test: test-api
+test: test-unit test-api
+
+test-unit:
+	phpunit -c tests/unit/phpunit.xml --testdox
 
 test-api:
 	phpunit --bootstrap vendor/autoload.php --testdox tests/api/

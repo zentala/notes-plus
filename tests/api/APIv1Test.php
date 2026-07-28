@@ -49,6 +49,34 @@ class APIv1Test extends CommonAPITest {
 		$this->checkGetReferenceNotes($refNotes, 'After read-only tests');
 	}
 
+	/** @depends testCheckForReferenceNotes */
+	public function testColor() : void {
+		$note = $this->createNote((object)[
+			'category' => '',
+			'title' => 'Color note',
+			'content' => '# Color note' . PHP_EOL . 'body',
+		], (object)[]);
+
+		// set a valid color and read it back
+		$rn = $this->updateNote($note, (object)[ 'color' => '#F28B82' ], (object)[ 'color' => '#f28b82' ]);
+		$this->assertEquals('#f28b82', $rn->color, 'Color set and lower-cased');
+		$response = $this->http->request('GET', 'notes/' . $note->id);
+		$this->checkResponse($response, 'Get colored note', 200);
+		$this->assertEquals('#f28b82', json_decode($response->getBody()->getContents())->color, 'Color persisted');
+
+		// an invalid color is rejected with 400 and does not change the note
+		$response = $this->http->request('PUT', 'notes/' . $note->id, [ 'json' => (object)[ 'color' => 'notacolor' ] ]);
+		$this->checkResponse($response, 'Reject invalid color', 400);
+		$response = $this->http->request('GET', 'notes/' . $note->id);
+		$this->assertEquals('#f28b82', json_decode($response->getBody()->getContents())->color, 'Color unchanged after invalid');
+
+		// clearing the color removes it
+		$rn = $this->updateNote($note, (object)[ 'color' => '' ], (object)[ 'color' => null ]);
+		$this->assertNull($rn->color, 'Color cleared');
+
+		$this->http->request('DELETE', 'notes/' . $note->id);
+	}
+
 	/**
 	 * @depends testCheckForReferenceNotes
 	 * @depends testCreateNotes
