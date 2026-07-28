@@ -94,6 +94,22 @@ class FrontMatterTest extends TestCase {
 		$this->assertSame('keep-123', $parsed['attrs']['source_id']);
 	}
 
+	public function testArchivedSentinelEmitsUnquotedAndRoundTrips() : void {
+		// E03: archived is the literal string sentinel 'true' — it matches the
+		// unquoted regex, so it must emit clean `archived: true` and read back.
+		$raw = $this->fm->serialize(['archived' => 'true'], "body\n");
+		$this->assertStringContainsString("archived: true\n", $raw);
+		$this->assertSame('true', $this->fm->parse($raw)['attrs']['archived']);
+	}
+
+	public function testArchivedAndColorCoexistInOneFence() : void {
+		$attrs = ['color' => '#f28b82', 'archived' => 'true'];
+		$raw = $this->fm->serialize($attrs, "# Note\nbody\n");
+		$parsed = $this->fm->parse($raw);
+		$this->assertSame($attrs, $parsed['attrs']);
+		$this->assertSame("# Note\nbody\n", $parsed['body']);
+	}
+
 	public function testCrlfLineEndings() : void {
 		$raw = "---\r\ncolor: '#fdcfe8'\r\n---\r\nbody line\r\n";
 		$parsed = $this->fm->parse($raw);
