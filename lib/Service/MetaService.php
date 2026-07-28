@@ -210,6 +210,7 @@ class MetaService {
 			$note->getCategory(),
 			$note->getFavorite(),
 			$note->getColor(),
+			$note->getArchived(),
 			$note->getReadOnly(),
 			$meta->getContentEtag(),
 		];

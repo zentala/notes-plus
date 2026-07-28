@@ -110,8 +110,9 @@ class NotesApiController extends ApiController {
 		int $modified = 0,
 		bool $favorite = false,
 		?string $color = null,
+		bool $archived = false,
 	) : JSONResponse {
-		return $this->helper->handleErrorResponse(function () use ($category, $title, $content, $modified, $favorite, $color) {
+		return $this->helper->handleErrorResponse(function () use ($category, $title, $content, $modified, $favorite, $color, $archived) {
 			$note = $this->service->create($this->helper->getUID(), $title, $category);
 			try {
 				$note->setContent($content);
@@ -123,6 +124,9 @@ class NotesApiController extends ApiController {
 				}
 				if ($color !== null) {
 					$note->setColor($color);
+				}
+				if ($archived) {
+					$note->setArchived($archived);
 				}
 			} catch (\Throwable $e) {
 				// roll-back note creation
@@ -165,6 +169,7 @@ class NotesApiController extends ApiController {
 		?string $category = null,
 		?bool $favorite = null,
 		?string $color = null,
+		?bool $archived = null,
 	) : JSONResponse {
 		return $this->helper->handleErrorResponse(function () use (
 			$id,
@@ -173,7 +178,8 @@ class NotesApiController extends ApiController {
 			$title,
 			$category,
 			$favorite,
-			$color
+			$color,
+			$archived
 		) {
 			$note = $this->helper->getNoteWithETagCheck($id, $this->request);
 			if ($content !== null && $content !== $note->getContent()) {
@@ -192,6 +198,9 @@ class NotesApiController extends ApiController {
 			}
 			if ($color !== null) {
 				$note->setColor($color);
+			}
+			if ($archived !== null && $archived !== $note->getArchived()) {
+				$note->setArchived($archived);
 			}
 			return $this->helper->getNoteData($note);
 		});

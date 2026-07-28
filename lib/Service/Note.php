@@ -111,6 +111,13 @@ class Note {
 		return $attrs['color'] ?? null;
 	}
 
+	public function getArchived() : bool {
+		$attrs = $this->frontMatter->parse($this->getRawContent())['attrs'];
+		// FrontMatter is a string-only layer; archived is the literal sentinel
+		// 'true' in the fence, absence means not archived (see E03 PLAN).
+		return ($attrs['archived'] ?? null) === 'true';
+	}
+
 	public function getExcerpt(int $maxlen = 100) : string {
 		$excerpt = trim($this->noteUtil->stripMarkdown($this->getContent()));
 		$title = $this->getTitle();
@@ -158,6 +165,9 @@ class Note {
 		}
 		if (!in_array('color', $exclude)) {
 			$data['color'] = $this->getColor();
+		}
+		if (!in_array('archived', $exclude)) {
+			$data['archived'] = $this->getArchived();
 		}
 		if (!in_array('readonly', $exclude)) {
 			$data['readonly'] = $this->getReadOnly();
@@ -242,6 +252,21 @@ class Note {
 			unset($attrs['color']);
 		} else {
 			$attrs['color'] = $color;
+		}
+		$this->writeRawContent($this->frontMatter->serialize($attrs, $parsed['body']));
+	}
+
+	public function setArchived(bool $archived) : void {
+		if ($archived === $this->getArchived()) {
+			return;
+		}
+		$this->noteUtil->ensureNoteIsWritable($this->file);
+		$parsed = $this->frontMatter->parse($this->getRawContent());
+		$attrs = $parsed['attrs'];
+		if ($archived) {
+			$attrs['archived'] = 'true';
+		} else {
+			unset($attrs['archived']);
 		}
 		$this->writeRawContent($this->frontMatter->serialize($attrs, $parsed['body']));
 	}
