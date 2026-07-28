@@ -13,6 +13,24 @@
 							<PlusIcon slot="icon" :size="20" />
 							{{ t('notesplus', 'New note') }}
 						</NcButton>
+						<div class="content-list__view-toggle">
+							<NcButton
+								:variant="viewMode === 'list' ? 'primary' : 'tertiary'"
+								:aria-label="t('notesplus', 'List view')"
+								:aria-pressed="viewMode === 'list'"
+								@click="setViewMode('list')"
+							>
+								<FormatListBulletedIcon slot="icon" :size="20" />
+							</NcButton>
+							<NcButton
+								:variant="viewMode === 'grid' ? 'primary' : 'tertiary'"
+								:aria-label="t('notesplus', 'Grid view')"
+								:aria-pressed="viewMode === 'grid'"
+								@click="setViewMode('grid')"
+							>
+								<ViewGridOutlineIcon slot="icon" :size="20" />
+							</NcButton>
+						</div>
 					</div>
 					<NcTextField
 						v-model="searchText"
@@ -24,28 +42,44 @@
 					/>
 				</div>
 
-				<NotesList v-if="groupedNotes.length === 1"
-					:notes="groupedNotes[0].notes"
-					:show-category-title="category === null"
-					@note-selected="onNoteSelected"
-					@note-deleted="onNoteDeleted"
-				/>
-				<template v-for="(group, idx) in groupedNotes" v-else>
-					<NotesCaption v-if="group.category && category !== group.category"
-						:key="group.category"
-						:name="categoryToLabel(group.category)"
-					/>
-					<NotesCaption v-if="group.timeslot"
-						:key="group.timeslot"
-						:name="group.timeslot"
-					/>
-					<NotesList
-						:key="idx"
-						:notes="group.notes"
+				<template v-if="viewMode === 'grid'">
+					<template v-for="group in gridGroups">
+						<NotesCaption v-if="group.label"
+							:key="group.key + '-caption'"
+							:name="group.label"
+						/>
+						<NotesGrid
+							:key="group.key + '-grid'"
+							:notes="group.notes"
+							@note-selected="onNoteSelected"
+							@note-deleted="onNoteDeleted"
+						/>
+					</template>
+				</template>
+				<template v-else>
+					<NotesList v-if="groupedNotes.length === 1"
+						:notes="groupedNotes[0].notes"
 						:show-category-title="category === null"
 						@note-selected="onNoteSelected"
 						@note-deleted="onNoteDeleted"
 					/>
+					<template v-for="(group, idx) in groupedNotes" v-else>
+						<NotesCaption v-if="group.category && category !== group.category"
+							:key="group.category"
+							:name="categoryToLabel(group.category)"
+						/>
+						<NotesCaption v-if="group.timeslot"
+							:key="group.timeslot"
+							:name="group.timeslot"
+						/>
+						<NotesList
+							:key="idx"
+							:notes="group.notes"
+							:show-category-title="category === null"
+							@note-selected="onNoteSelected"
+							@note-deleted="onNoteDeleted"
+						/>
+					</template>
 				</template>
 				<div
 					v-if="displayedNotes.length != filteredNotes.length"
@@ -76,10 +110,14 @@ import NcAppContentDetails from '@nextcloud/vue/components/NcAppContentDetails'
 import NcAppContentList from '@nextcloud/vue/components/NcAppContentList'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcTextField from '@nextcloud/vue/components/NcTextField'
+import FormatListBulletedIcon from 'vue-material-design-icons/FormatListBulleted.vue'
 import PlusIcon from 'vue-material-design-icons/Plus.vue'
+import ViewGridOutlineIcon from 'vue-material-design-icons/ViewGridOutline.vue'
 import Note from './Note.vue'
 import NotesCaption from './NotesCaption.vue'
+import NotesGrid from './NotesGrid.vue'
 import NotesList from './NotesList.vue'
+import { groupNotesForGrid } from '../grouping.js'
 import { createNote } from '../NotesService.js'
 import store from '../store.js'
 import { categoryLabel } from '../Util.js'
@@ -95,8 +133,11 @@ export default {
 		NcTextField,
 		Note,
 		NotesList,
+		NotesGrid,
 		NotesCaption,
+		FormatListBulletedIcon,
 		PlusIcon,
+		ViewGridOutlineIcon,
 	},
 
 	directives: {
@@ -131,8 +172,16 @@ export default {
 			return store.notes.getSelectedCategory()
 		},
 
+		viewMode() {
+			return store.app.viewMode
+		},
+
 		filteredNotes() {
 			return store.notes.getFilteredNotes()
+		},
+
+		gridGroups() {
+			return groupNotesForGrid(this.displayedNotes, this.category)
 		},
 
 		displayedNotes() {
@@ -223,6 +272,10 @@ export default {
 			store.notes.setSelectedCategory(category)
 		},
 
+		setViewMode(mode) {
+			store.app.setViewMode(mode)
+		},
+
 		onNewNote() {
 			if (this.creatingNote) {
 				return
@@ -280,12 +333,19 @@ export default {
 
 .content-list__actions {
 	display: flex;
+	gap: 4px;
 	margin-bottom: 6px;
 }
 
-.content-list__actions :deep(.button-vue) {
-	width: 100%;
+.content-list__actions > :deep(.button-vue) {
+	flex: 1 1 auto;
 	justify-content: center;
+}
+
+.content-list__view-toggle {
+	display: flex;
+	flex: 0 0 auto;
+	gap: 2px;
 }
 
 .content-list__search-more {

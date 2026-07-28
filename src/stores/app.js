@@ -4,6 +4,7 @@
  */
 
 import { defineStore } from 'pinia'
+import { loadViewMode, saveViewMode } from '../view-mode.js'
 
 export const useAppStore = defineStore('app', {
 	state: () => ({
@@ -12,9 +13,14 @@ export const useAppStore = defineStore('app', {
 		isManualSave: false,
 		documentTitle: null,
 		searchText: '',
+		viewMode: loadViewMode(),
 	}),
 
 	actions: {
+		setViewMode(mode) {
+			this.viewMode = saveViewMode(mode)
+		},
+
 		setSettings(settings) {
 			this.settings = settings
 		},
