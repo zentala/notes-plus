@@ -11,6 +11,7 @@ export const noteAttributes = [
 	'modified',
 	'favorite',
 	'category',
+	'color',
 ]
 
 export function copyNote(from, to, exclude) {

@@ -9,6 +9,8 @@
 		:active="isSelected"
 		:to="{ name: 'note', params: { noteId: note.id.toString() } }"
 		:draggable="isDraggable"
+		:style="colorStyle"
+		:class="{ 'note-item--colored': !!note.color }"
 		one-line
 		@update:menuOpen="onMenuChange"
 		@click="onNoteSelected(note.id)"
@@ -43,6 +45,17 @@
 				</template>
 				{{ t('notesplus', 'Share') }}
 			</NcActionButton>
+
+			<NcActionButton v-if="!showColorSelect" :close-after-click="false" @click="showColorSelect = true">
+				<template #icon>
+					<PaletteOutlineIcon :size="20" />
+				</template>
+				{{ t('notesplus', 'Change color') }}
+			</NcActionButton>
+			<NoteColorPicker v-else
+				:value="note.color"
+				@select="onColorSelected"
+			/>
 
 			<NcActionButton v-if="!showCategorySelect" @click="showCategorySelect = true">
 				<template #icon>
@@ -106,11 +119,13 @@ import NcActionSeparator from '@nextcloud/vue/components/NcActionSeparator'
 import NcListItem from '@nextcloud/vue/components/NcListItem'
 import AlertOctagonOutlineIcon from 'vue-material-design-icons/AlertOctagonOutline.vue'
 import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
+import PaletteOutlineIcon from 'vue-material-design-icons/PaletteOutline.vue'
 import PencilOutlineIcon from 'vue-material-design-icons/PencilOutline.vue'
 import ShareVariantOutlineIcon from 'vue-material-design-icons/ShareVariantOutline.vue'
 import StarIcon from 'vue-material-design-icons/Star.vue'
+import NoteColorPicker from './NoteColorPicker.vue'
 import logger from '../Logger.js'
-import { deleteNote, fetchNote, setCategory, setFavorite, setTitle } from '../NotesService.js'
+import { deleteNote, fetchNote, setCategory, setColor, setFavorite, setTitle } from '../NotesService.js'
 import store from '../store.js'
 import { categoryLabel, routeIsNewNote } from '../Util.js'
 
@@ -122,9 +137,11 @@ export default {
 		FolderOutlineIcon,
 		NcActionButton,
 		NcListItem,
+		NoteColorPicker,
 		StarIcon,
 		NcActionSeparator,
 		NcActionInput,
+		PaletteOutlineIcon,
 		PencilOutlineIcon,
 		ShareVariantOutlineIcon,
 	},
@@ -147,11 +164,13 @@ export default {
 				note: false,
 				category: false,
 				favorite: false,
+				color: false,
 			},
 
 			newTitle: '',
 			renaming: false,
 			showCategorySelect: false,
+			showColorSelect: false,
 			isShareCreated: false,
 		}
 	},
@@ -175,6 +194,10 @@ export default {
 
 		categoryTitle() {
 			return categoryLabel(this.note.category)
+		},
+
+		colorStyle() {
+			return this.note.color ? { '--np-note-color': this.note.color } : {}
 		},
 
 		actionFavoriteText() {
@@ -239,6 +262,20 @@ export default {
 		onMenuChange(state) {
 			this.actionsOpen = state
 			this.showCategorySelect = false
+			this.showColorSelect = false
+		},
+
+		async onColorSelected(color) {
+			this.showColorSelect = false
+			if ((this.note.color ?? null) === (color ?? null)) {
+				return
+			}
+			this.loading.color = true
+			try {
+				await setColor(this.note.id, color)
+			} finally {
+				this.loading.color = false
+			}
 		},
 
 		onNoteSelected(noteId) {
@@ -360,5 +397,9 @@ export default {
 	box-sizing: border-box;
 	height: calc(var(--list-item-height) + 2 * var(--default-grid-baseline));
 	padding: var(--list-item-padding);
+}
+
+.note-item--colored :deep(.list-item__anchor) {
+	border-left: 4px solid var(--np-note-color, transparent);
 }
 </style>
