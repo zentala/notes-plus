@@ -121,7 +121,7 @@ class NotesApiController extends ApiController {
 				if ($favorite) {
 					$note->setFavorite($favorite);
 				}
-				if ($color !== null && $color !== '') {
+				if ($color !== null) {
 					$note->setColor($color);
 				}
 			} catch (\Throwable $e) {
@@ -190,8 +190,8 @@ class NotesApiController extends ApiController {
 			if ($favorite !== null && $favorite !== $note->getFavorite()) {
 				$note->setFavorite($favorite);
 			}
-			if ($color !== null && $color !== $note->getColor()) {
-				$note->setColor($color === '' ? null : $color);
+			if ($color !== null) {
+				$note->setColor($color);
 			}
 			return $this->helper->getNoteData($note);
 		});

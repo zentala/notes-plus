@@ -18,6 +18,8 @@ class Note {
 	private NoteUtil $noteUtil;
 	private Util $util;
 	private FrontMatter $frontMatter;
+	/** in-request cache of the raw file content, refreshed on every write */
+	private ?string $rawContent = null;
 
 	public function __construct(File $file, Folder $notesFolder, NoteUtil $noteUtil) {
 		$this->file = $file;
@@ -49,6 +51,9 @@ class Note {
 	 * front-matter itself must be read or rewritten (ADR-007).
 	 */
 	private function getRawContent() : string {
+		if ($this->rawContent !== null) {
+			return $this->rawContent;
+		}
 		$content = $this->file->getContent();
 		// blank files return false when using object storage as primary storage
 		if ($content === false && $this->file->getSize() === 0) {
@@ -64,7 +69,37 @@ class Note {
 			$content = mb_convert_encoding($content, 'UTF-8');
 		}
 		$content = str_replace([ pack('H*', 'FEFF'), pack('H*', 'FFEF'), pack('H*', 'EFBBBF') ], '', $content);
+		$this->rawContent = $content;
 		return $content;
+	}
+
+	/**
+	 * Persist raw file content and keep the in-request cache in sync, so a
+	 * subsequent read in the same request does not re-hit storage.
+	 */
+	private function writeRawContent(string $raw) : void {
+		$this->noteUtil->ensureSufficientStorage($this->file->getParent(), strlen($raw));
+		$this->file->putContent($raw);
+		$this->rawContent = $raw;
+	}
+
+	/**
+	 * Validate/normalize a color to `#rrggbb` (lower-case) or null (cleared).
+	 * The file is the source of truth (ADR-007), so any 6-digit hex is allowed
+	 * — not just the UI palette — but arbitrary strings are rejected to keep the
+	 * value safe as a CSS custom property and clean in the note file.
+	 *
+	 * @throws \InvalidArgumentException on a non-empty, non-hex value
+	 */
+	private function normalizeColorValue(?string $color) : ?string {
+		if ($color === null || $color === '') {
+			return null;
+		}
+		$color = strtolower($color);
+		if (preg_match('/^#[0-9a-f]{6}$/', $color) !== 1) {
+			throw new \InvalidArgumentException('Invalid note color: ' . $color);
+		}
+		return $color;
 	}
 
 	public function getContent() : string {
@@ -192,26 +227,23 @@ class Note {
 		// preserve any front-matter we own (color, later tags) when the editor
 		// saves the body — the client never sees or sends the fence (ADR-007)
 		$attrs = $this->frontMatter->parse($this->getRawContent())['attrs'];
-		$raw = $this->frontMatter->serialize($attrs, $content);
-		$this->noteUtil->ensureSufficientStorage($this->file->getParent(), strlen($raw));
-		$this->file->putContent($raw);
+		$this->writeRawContent($this->frontMatter->serialize($attrs, $content));
 	}
 
 	public function setColor(?string $color) : void {
+		$color = $this->normalizeColorValue($color);
 		if ($color === $this->getColor()) {
 			return;
 		}
 		$this->noteUtil->ensureNoteIsWritable($this->file);
 		$parsed = $this->frontMatter->parse($this->getRawContent());
 		$attrs = $parsed['attrs'];
-		if ($color === null || $color === '') {
+		if ($color === null) {
 			unset($attrs['color']);
 		} else {
 			$attrs['color'] = $color;
 		}
-		$raw = $this->frontMatter->serialize($attrs, $parsed['body']);
-		$this->noteUtil->ensureSufficientStorage($this->file->getParent(), strlen($raw));
-		$this->file->putContent($raw);
+		$this->writeRawContent($this->frontMatter->serialize($attrs, $parsed['body']));
 	}
 
 	public function setModified(int $modified) : void {

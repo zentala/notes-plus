@@ -148,6 +148,9 @@ class Helper {
 		} catch (\OCP\Lock\LockedException $e) {
 			$this->logException($e);
 			$response = $this->createErrorResponse(Http::STATUS_LOCKED);
+		} catch (\InvalidArgumentException $e) {
+			$this->logException($e);
+			$response = $this->createErrorResponse(Http::STATUS_BAD_REQUEST);
 		} catch (\Throwable $e) {
 			$this->logException($e);
 			$response = $this->createErrorResponse(Http::STATUS_INTERNAL_SERVER_ERROR);

@@ -87,7 +87,11 @@ class FrontMatter {
 		$len = strlen($value);
 		if ($len >= 2) {
 			$first = $value[0];
-			if (($first === '"' || $first === '\'') && $value[$len - 1] === $first) {
+			if ($first === '\'' && $value[$len - 1] === '\'') {
+				// YAML single-quote escaping: doubled '' means a literal '
+				return str_replace('\'\'', '\'', substr($value, 1, $len - 2));
+			}
+			if ($first === '"' && $value[$len - 1] === '"') {
 				return substr($value, 1, $len - 2);
 			}
 		}

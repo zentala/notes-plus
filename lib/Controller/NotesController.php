@@ -290,7 +290,7 @@ class NotesController extends Controller {
 
 				case 'color':
 					if ($color !== null) {
-						$note->setColor($color === '' ? null : $color);
+						$note->setColor($color);
 					}
 					$result = $note->getColor();
 					break;
