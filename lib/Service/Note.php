@@ -118,7 +118,12 @@ class Note {
 		return ($attrs['archived'] ?? null) === 'true';
 	}
 
-	public function getExcerpt(int $maxlen = 100) : string {
+	/**
+	 * @param int  $maxlen        maximum length of the excerpt in characters
+	 * @param bool $preserveLines keep line breaks (multi-line card preview) instead of
+	 *                            collapsing them to an em-space (single-line list row)
+	 */
+	public function getExcerpt(int $maxlen = 100, bool $preserveLines = false) : string {
 		$excerpt = trim($this->noteUtil->stripMarkdown($this->getContent()));
 		$title = $this->getTitle();
 		if (!empty($title)) {
@@ -131,7 +136,7 @@ class Note {
 		if (mb_strlen($excerpt, 'utf-8') > $maxlen) {
 			$excerpt = mb_substr($excerpt, 0, $maxlen, 'utf-8') . '…';
 		}
-		return str_replace("\n", "\u{2003}", $excerpt);
+		return $preserveLines ? $excerpt : str_replace("\n", "\u{2003}", $excerpt);
 	}
 
 	public function getModified() : int {
@@ -168,6 +173,13 @@ class Note {
 		}
 		if (!in_array('archived', $exclude)) {
 			$data['archived'] = $this->getArchived();
+		}
+		if (!in_array('excerpt', $exclude)) {
+			try {
+				$data['excerpt'] = $this->getExcerpt(220, true);
+			} catch (\Throwable $e) {
+				$data['excerpt'] = '';
+			}
 		}
 		if (!in_array('readonly', $exclude)) {
 			$data['readonly'] = $this->getReadOnly();

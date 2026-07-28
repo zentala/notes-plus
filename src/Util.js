@@ -13,6 +13,7 @@ export const noteAttributes = [
 	'category',
 	'color',
 	'archived',
+	'excerpt',
 ]
 
 export function copyNote(from, to, exclude) {
