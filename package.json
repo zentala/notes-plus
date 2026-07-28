@@ -10,6 +10,7 @@
 		"lint": "ESLINT_USE_FLAT_CONFIG=false eslint --ext .js,.vue,.ts,.mjs src playwright",
 		"lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint --ext .js,.vue,.ts,.mjs src playwright --fix",
 		"start:nextcloud": "node playwright/start-nextcloud-server.mjs",
+		"test:unit": "vitest run",
 		"test:e2e": "playwright test",
 		"test:e2e:ui": "playwright test --ui",
 		"test:e2e:report": "playwright show-report",
@@ -46,6 +47,10 @@
 		"@nextcloud/stylelint-config": "^3.2.2",
 		"@nextcloud/webpack-vue-config": "^7.0.2",
 		"@playwright/test": "^1.61.1",
+		"@vitejs/plugin-vue2": "^2.3.4",
+		"@vue/test-utils": "^1.3.6",
+		"jsdom": "^30.0.0",
+		"vitest": "^2.1.9",
 		"vue-loader": "^15.11.1"
 	},
 	"engines": {
