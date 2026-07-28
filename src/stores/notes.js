@@ -18,6 +18,7 @@ export const useNotesStore = defineStore('notes', {
 		selectedCategory: null,
 		selectedNote: null,
 		filterString: '',
+		showArchived: false,
 	}),
 
 	getters: {
@@ -106,7 +107,13 @@ export const useNotesStore = defineStore('notes', {
 			const appStore = useAppStore()
 			const searchText = appStore.searchText.toLowerCase()
 			const notes = state.notes.filter((note) => {
-				if (state.selectedCategory !== null
+				// archived notes live only in the Archived view (and vice versa)
+				if (state.showArchived !== Boolean(note.archived)) {
+					return false
+				}
+
+				if (!state.showArchived
+					&& state.selectedCategory !== null
 					&& state.selectedCategory !== note.category
 					&& !note.category.startsWith(state.selectedCategory + '/')) {
 					return false
@@ -176,6 +183,14 @@ export const useNotesStore = defineStore('notes', {
 
 		getSelectedNote: (state) => () => {
 			return state.selectedNote
+		},
+
+		getShowArchived: (state) => () => {
+			return state.showArchived
+		},
+
+		getArchivedCount: (state) => () => {
+			return state.notes.filter((note) => note.archived).length
 		},
 	},
 
@@ -265,6 +280,12 @@ export const useNotesStore = defineStore('notes', {
 
 		setSelectedCategory(category) {
 			this.selectedCategory = category
+			// picking a real category leaves the Archived view
+			this.showArchived = false
+		},
+
+		setShowArchived(showArchived) {
+			this.showArchived = showArchived
 		},
 
 		setSelectedNote(note) {

@@ -354,6 +354,19 @@ export function setColor(noteId, color) {
 		})
 }
 
+export function setArchived(noteId, archived) {
+	return axios
+		.put(url('/notes/' + noteId + '/archived'), { archived })
+		.then((response) => {
+			store.notes.setNoteAttribute({ noteId, attribute: 'archived', value: response.data })
+		})
+		.catch((err) => {
+			logger.error('Setting archived state for note has failed', { noteId, error: err })
+			handleSyncError(t('notesplus', 'Archiving note {id} has failed.', { id: noteId }), err)
+			throw err
+		})
+}
+
 export function setCategory(noteId, category) {
 	return axios
 		.put(url('/notes/' + noteId + '/category'), { category })

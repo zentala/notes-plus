@@ -39,6 +39,14 @@
 				{{ actionFavoriteText }}
 			</NcActionButton>
 
+			<NcActionButton @click="onToggleArchived">
+				<template #icon>
+					<ArchiveArrowUpOutlineIcon v-if="note.archived" :size="20" />
+					<ArchiveArrowDownOutlineIcon v-else :size="20" />
+				</template>
+				{{ actionArchivedText }}
+			</NcActionButton>
+
 			<NcActionButton @click="onToggleSharing">
 				<template #icon>
 					<ShareVariantOutlineIcon :size="20" />
@@ -126,6 +134,8 @@ import NcActionInput from '@nextcloud/vue/components/NcActionInput'
 import NcActionSeparator from '@nextcloud/vue/components/NcActionSeparator'
 import NcListItem from '@nextcloud/vue/components/NcListItem'
 import AlertOctagonOutlineIcon from 'vue-material-design-icons/AlertOctagonOutline.vue'
+import ArchiveArrowDownOutlineIcon from 'vue-material-design-icons/ArchiveArrowDownOutline.vue'
+import ArchiveArrowUpOutlineIcon from 'vue-material-design-icons/ArchiveArrowUpOutline.vue'
 import ChevronLeftIcon from 'vue-material-design-icons/ChevronLeft.vue'
 import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
 import PaletteOutlineIcon from 'vue-material-design-icons/PaletteOutline.vue'
@@ -135,7 +145,7 @@ import StarIcon from 'vue-material-design-icons/Star.vue'
 import NoteColorPicker from './NoteColorPicker.vue'
 import logger from '../Logger.js'
 import { normalizeColor } from '../notes-colors.js'
-import { deleteNote, fetchNote, setCategory, setColor, setFavorite, setTitle } from '../NotesService.js'
+import { deleteNote, fetchNote, setArchived, setCategory, setColor, setFavorite, setTitle } from '../NotesService.js'
 import store from '../store.js'
 import { categoryLabel, routeIsNewNote } from '../Util.js'
 
@@ -144,6 +154,8 @@ export default {
 
 	components: {
 		AlertOctagonOutlineIcon,
+		ArchiveArrowDownOutlineIcon,
+		ArchiveArrowUpOutlineIcon,
 		ChevronLeftIcon,
 		FolderOutlineIcon,
 		NcActionButton,
@@ -224,6 +236,10 @@ export default {
 			return icon
 		},
 
+		actionArchivedText() {
+			return this.note.archived ? this.t('notesplus', 'Unarchive') : this.t('notesplus', 'Archive')
+		},
+
 		actionCategoryText() {
 			return categoryLabel(this.note.category)
 		},
@@ -301,6 +317,14 @@ export default {
 				})
 				.then(() => {
 					this.loading.favorite = false
+					this.actionsOpen = false
+				})
+		},
+
+		onToggleArchived() {
+			setArchived(this.note.id, !this.note.archived)
+				.catch(() => {})
+				.then(() => {
 					this.actionsOpen = false
 				})
 		},
