@@ -77,6 +77,32 @@ class APIv1Test extends CommonAPITest {
 		$this->http->request('DELETE', 'notes/' . $note->id);
 	}
 
+	/** @depends testCheckForReferenceNotes */
+	public function testArchived() : void {
+		$note = $this->createNote((object)[
+			'category' => '',
+			'title' => 'Archive note',
+			'content' => '# Archive note' . PHP_EOL . 'body',
+		], (object)[]);
+		$this->assertFalse($note->archived, 'New note is not archived');
+
+		$etagBefore = $this->http->request('GET', 'notes/' . $note->id)->getHeaderLine('ETag');
+
+		// archive it and read it back
+		$rn = $this->updateNote($note, (object)[ 'archived' => true ], (object)[ 'archived' => true ]);
+		$this->assertTrue($rn->archived, 'Note archived');
+		$response = $this->http->request('GET', 'notes/' . $note->id);
+		$this->checkResponse($response, 'Get archived note', 200);
+		$this->assertTrue(json_decode($response->getBody()->getContents())->archived, 'Archived persisted');
+		$this->assertNotEquals($etagBefore, $response->getHeaderLine('ETag'), 'ETag bumped on archive');
+
+		// unarchive removes the flag
+		$rn = $this->updateNote($note, (object)[ 'archived' => false ], (object)[ 'archived' => false ]);
+		$this->assertFalse($rn->archived, 'Note unarchived');
+
+		$this->http->request('DELETE', 'notes/' . $note->id);
+	}
+
 	/**
 	 * @depends testCheckForReferenceNotes
 	 * @depends testCreateNotes

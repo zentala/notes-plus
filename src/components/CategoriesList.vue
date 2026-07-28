@@ -7,7 +7,7 @@
 	<Fragment>
 		<NcAppNavigationItem
 			:name="t('notesplus', 'All notes')"
-			:active="selectedCategory === null"
+			:active="selectedCategory === null && !showArchived"
 			:draggable="false"
 			class="category-no-actions"
 			:class="{
@@ -59,7 +59,7 @@
 		<NcAppNavigationItem v-for="category in categories"
 			:key="category.name"
 			:name="categoryTitle(category.name)"
-			:active="category.name === selectedCategory"
+			:active="category.name === selectedCategory && !showArchived"
 			:draggable="false"
 			:editable="category.name !== ''"
 			:edit-label="t('notesplus', 'Rename category')"
@@ -98,6 +98,24 @@
 				</NcActionButton>
 			</template>
 		</NcAppNavigationItem>
+
+		<NcAppNavigationItem
+			v-if="archivedCount > 0"
+			:name="t('notesplus', 'Archived')"
+			:active="showArchived"
+			:draggable="false"
+			class="category-no-actions"
+			@click.prevent.stop="onSelectArchived"
+		>
+			<template #icon>
+				<ArchiveIcon :size="20" />
+			</template>
+			<template #counter>
+				<NcCounterBubble>
+					{{ archivedCount }}
+				</NcCounterBubble>
+			</template>
+		</NcAppNavigationItem>
 	</Fragment>
 </template>
 
@@ -109,6 +127,7 @@ import NcActionButton from '@nextcloud/vue/components/NcActionButton'
 import NcAppNavigationCaption from '@nextcloud/vue/components/NcAppNavigationCaption'
 import NcAppNavigationItem from '@nextcloud/vue/components/NcAppNavigationItem'
 import NcCounterBubble from '@nextcloud/vue/components/NcCounterBubble'
+import ArchiveIcon from 'vue-material-design-icons/ArchiveOutline.vue'
 import DeleteIcon from 'vue-material-design-icons/Delete.vue'
 import FolderIcon from 'vue-material-design-icons/Folder.vue'
 import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
@@ -121,6 +140,7 @@ export default {
 	name: 'CategoriesList',
 
 	components: {
+		ArchiveIcon,
 		DeleteIcon,
 		Fragment,
 		NcActionButton,
@@ -153,6 +173,14 @@ export default {
 
 		selectedCategory() {
 			return store.notes.getSelectedCategory()
+		},
+
+		showArchived() {
+			return store.notes.getShowArchived()
+		},
+
+		archivedCount() {
+			return store.notes.getArchivedCount()
 		},
 	},
 
@@ -419,6 +447,10 @@ export default {
 
 		onSelectCategory(category) {
 			store.notes.setSelectedCategory(category)
+		},
+
+		onSelectArchived() {
+			store.notes.setShowArchived(true)
 		},
 
 		async closeOpenNoteBeforeDelete(categoryName) {

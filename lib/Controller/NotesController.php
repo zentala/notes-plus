@@ -240,6 +240,7 @@ class NotesController extends Controller {
 		?string $category = null,
 		?bool $favorite = null,
 		?string $color = null,
+		?bool $archived = null,
 	) : JSONResponse {
 		return $this->helper->handleErrorResponse(function () use (
 			$id,
@@ -248,7 +249,8 @@ class NotesController extends Controller {
 			$title,
 			$category,
 			$favorite,
-			$color
+			$color,
+			$archived
 		) {
 			$note = $this->notesService->get($this->helper->getUID(), $id);
 			$result = null;
@@ -293,6 +295,13 @@ class NotesController extends Controller {
 						$note->setColor($color);
 					}
 					$result = $note->getColor();
+					break;
+
+				case 'archived':
+					if ($archived !== null) {
+						$note->setArchived($archived);
+					}
+					$result = $note->getArchived();
 					break;
 
 				default:
