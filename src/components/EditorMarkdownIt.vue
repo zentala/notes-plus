@@ -14,6 +14,7 @@ import { generateUrl } from '@nextcloud/router'
 import MarkdownIt from 'markdown-it'
 import markdownItBidi from 'markdown-it-bidi'
 import markdownItTaskCheckbox from 'markdown-it-task-checkbox'
+import { setCheckedAt } from '../checklist.js'
 import { escapeHtml } from '../Util.js'
 
 export default {
@@ -84,31 +85,21 @@ export default {
 
 		onClickListItem(event) {
 			event.stopPropagation()
-			let idOfCheckbox = 0
-			const markdownLines = this.value.split('\n')
-			markdownLines.forEach((line, i) => {
-				// Regex Source: https://github.com/linsir/markdown-it-task-checkbox/blob/master/index.js#L121
-				// plus the '- '-string.
-				if (/^[-+*]\s+\[[xX \u00A0]\][ \u00A0]/.test(line.trim())) {
-					markdownLines[i] = this.checkLine(line, i, idOfCheckbox, event.target)
-					idOfCheckbox++
-				}
-			})
-
-			this.$emit('input', markdownLines.join('\n'))
-		},
-
-		checkLine(line, index, id, target) {
-			let returnValue = line
-			if ('cbx_' + id === target.id) {
-				if (target.checked) {
-					returnValue = returnValue.replace(/\[[ \u00A0]\]/, '[x]')
-				} else {
-					// matches [x] or [X], to prevent two occurences of uppercase and lowercase X to be replaced
-					returnValue = returnValue.replace(/\[[xX]\]/, '[ ]')
-				}
+			// markdown-it-task-checkbox renders each task checkbox as
+			// <input id="cbx_<ordinal>">; the ordinal is its position among
+			// rendered checkboxes. Map that ordinal to the source line through the
+			// shared model, which skips fenced-code `- [ ]` so the click can never
+			// toggle the wrong line (the old line-counting approach could).
+			const item = event.target.closest('.task-list-item')
+			const checkbox = item ? item.querySelector('input[type="checkbox"]') : null
+			if (!checkbox || !checkbox.id.startsWith('cbx_')) {
+				return
 			}
-			return returnValue
+			const ordinal = parseInt(checkbox.id.slice('cbx_'.length), 10)
+			if (Number.isNaN(ordinal)) {
+				return
+			}
+			this.$emit('input', setCheckedAt(this.value, ordinal, checkbox.checked))
 		},
 
 		setImageRule(id) {

@@ -7,6 +7,33 @@
 	<div>
 		<div class="upload-button">
 			<NcActions
+				v-if="!readonly && showChecklistActions"
+				container=".upload-button"
+				menu-align="right"
+			>
+				<template #icon>
+					<CheckboxMultipleMarkedOutlineIcon :size="20" />
+				</template>
+				<NcActionButton :close-after-click="true" @click="onUncheckAll">
+					<template #icon>
+						<CheckboxMultipleBlankOutlineIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Uncheck all') }}
+				</NcActionButton>
+				<NcActionButton :close-after-click="true" @click="onDeleteCompleted">
+					<template #icon>
+						<DeleteSweepOutlineIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Delete completed') }}
+				</NcActionButton>
+				<NcActionButton :close-after-click="true" @click="onSinkChecked">
+					<template #icon>
+						<SortBoolAscendingVariantIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Move checked to bottom') }}
+				</NcActionButton>
+			</NcActions>
+			<NcActions
 				container=".upload-button"
 				menu-align="right"
 			>
@@ -46,8 +73,13 @@ import EasyMDE from 'easymde'
 import { basename, relative } from 'path'
 import NcActionButton from '@nextcloud/vue/components/NcActionButton'
 import NcActions from '@nextcloud/vue/components/NcActions'
+import CheckboxMultipleBlankOutlineIcon from 'vue-material-design-icons/CheckboxMultipleBlankOutline.vue'
+import CheckboxMultipleMarkedOutlineIcon from 'vue-material-design-icons/CheckboxMultipleMarkedOutline.vue'
+import DeleteSweepOutlineIcon from 'vue-material-design-icons/DeleteSweepOutline.vue'
 import ImageOutlineIcon from 'vue-material-design-icons/ImageOutline.vue'
 import ImagePlusOutlineIcon from 'vue-material-design-icons/ImagePlusOutline.vue'
+import SortBoolAscendingVariantIcon from 'vue-material-design-icons/SortBoolAscendingVariant.vue'
+import { deleteCompleted, hasChecklist, sinkChecked, uncheckAll } from '../checklist.js'
 import logger from '../Logger.js'
 import store from '../store.js'
 
@@ -57,10 +89,14 @@ export default {
 	name: 'EditorEasyMDE',
 
 	components: {
+		CheckboxMultipleBlankOutlineIcon,
+		CheckboxMultipleMarkedOutlineIcon,
+		DeleteSweepOutlineIcon,
 		ImageOutlineIcon,
 		ImagePlusOutlineIcon,
 		NcActions,
 		NcActionButton,
+		SortBoolAscendingVariantIcon,
 	},
 
 	props: {
@@ -100,6 +136,12 @@ export default {
 
 			mde: null,
 		}
+	},
+
+	computed: {
+		showChecklistActions() {
+			return hasChecklist(this.value)
+		},
 	},
 
 	watch: {
@@ -182,6 +224,28 @@ export default {
 
 			// + 1 for some reason... not sure why
 			doc.replaceRange(newvalue, { line: index, ch: line.text.indexOf('[') }, { line: index, ch: line.text.indexOf(']') + 1 })
+		},
+
+		applyChecklistTransform(transform) {
+			const current = this.mde.value()
+			const next = transform(current)
+			if (next !== current) {
+				const position = this.mde.codemirror.getCursor()
+				this.mde.value(next)
+				this.mde.codemirror.setCursor(position)
+			}
+		},
+
+		onUncheckAll() {
+			this.applyChecklistTransform(uncheckAll)
+		},
+
+		onDeleteCompleted() {
+			this.applyChecklistTransform(deleteCompleted)
+		},
+
+		onSinkChecked() {
+			this.applyChecklistTransform(sinkChecked)
 		},
 
 		onClickEditor(event) {
