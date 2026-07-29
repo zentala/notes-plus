@@ -13,6 +13,7 @@ namespace OCA\NotesPlus\Controller;
 use OCA\NotesPlus\Service\Note;
 use OCA\NotesPlus\Service\NotesService;
 use OCA\NotesPlus\Service\SettingsService;
+use OCA\NotesPlus\Service\TagPaletteService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -34,6 +35,7 @@ class NotesController extends Controller {
 		private NotesService $notesService,
 		private ILockManager $lockManager,
 		private SettingsService $settingsService,
+		private TagPaletteService $tagPalette,
 		private Helper $helper,
 		private IConfig $settings,
 		private IL10N $l10n,
@@ -78,6 +80,7 @@ class NotesController extends Controller {
 				'notesData' => $nac ? array_values($nac['notesData']) : null,
 				'noteIds' => $nac ? array_keys($nac['notesAll']) : null,
 				'categories' => $nac['categories'] ?? null,
+				'tagColors' => $this->tagPalette->getAll($userId),
 				'settings' => $settings,
 				'lastViewedNote' => $lastViewedNote,
 				'errorMessage' => $errorMessage,
@@ -241,6 +244,7 @@ class NotesController extends Controller {
 		?bool $favorite = null,
 		?string $color = null,
 		?bool $archived = null,
+		?array $tags = null,
 	) : JSONResponse {
 		return $this->helper->handleErrorResponse(function () use (
 			$id,
@@ -250,7 +254,8 @@ class NotesController extends Controller {
 			$category,
 			$favorite,
 			$color,
-			$archived
+			$archived,
+			$tags
 		) {
 			$note = $this->notesService->get($this->helper->getUID(), $id);
 			$result = null;
@@ -302,6 +307,13 @@ class NotesController extends Controller {
 						$note->setArchived($archived);
 					}
 					$result = $note->getArchived();
+					break;
+
+				case 'tags':
+					if ($tags !== null) {
+						$note->setTags($tags);
+					}
+					$result = $note->getTags();
 					break;
 
 				default:

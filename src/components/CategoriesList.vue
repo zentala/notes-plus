@@ -116,6 +116,51 @@
 				</NcCounterBubble>
 			</template>
 		</NcAppNavigationItem>
+		<NcAppNavigationCaption v-if="tags.length" :name="t('notesplus', 'Tags')" />
+
+		<NcAppNavigationItem v-for="tag in tags"
+			:key="'tag-' + tag.name"
+			:name="tag.name"
+			:active="tag.name === selectedTag"
+			:draggable="false"
+			:editable="true"
+			:edit-label="t('notesplus', 'Rename tag')"
+			:edit-placeholder="tag.name"
+			:force-menu="true"
+			:force-display-actions="true"
+			@click.prevent.stop="onSelectTag(tag.name)"
+			@update:name="onRenameTag(tag.name, $event)"
+		>
+			<template #icon>
+				<TagIcon :size="20" :fill-color="tag.color || undefined" />
+			</template>
+			<template #counter>
+				<NcCounterBubble>
+					{{ tag.count }}
+				</NcCounterBubble>
+			</template>
+			<template #actions>
+				<NcActionButton v-if="colorEditTag !== tag.name"
+					:close-after-click="false"
+					@click="colorEditTag = tag.name"
+				>
+					<template #icon>
+						<PaletteOutlineIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Change color') }}
+				</NcActionButton>
+				<NoteColorPicker v-else
+					:value="tag.color"
+					@select="onTagColor(tag.name, $event)"
+				/>
+				<NcActionButton :close-after-click="true" @click="onDeleteTag(tag.name)">
+					<template #icon>
+						<DeleteIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Delete tag') }}
+				</NcActionButton>
+			</template>
+		</NcAppNavigationItem>
 	</Fragment>
 </template>
 
@@ -132,7 +177,10 @@ import DeleteIcon from 'vue-material-design-icons/Delete.vue'
 import FolderIcon from 'vue-material-design-icons/Folder.vue'
 import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
 import HistoryIcon from 'vue-material-design-icons/History.vue'
-import { deleteCategory as deleteCategoryRequest, getCategories, renameCategory as renameCategoryRequest, setCategory } from '../NotesService.js'
+import PaletteOutlineIcon from 'vue-material-design-icons/PaletteOutline.vue'
+import TagIcon from 'vue-material-design-icons/Tag.vue'
+import NoteColorPicker from './NoteColorPicker.vue'
+import { deleteCategory as deleteCategoryRequest, deleteTag as deleteTagRequest, getCategories, renameCategory as renameCategoryRequest, renameTag as renameTagRequest, setCategory, setTagColor } from '../NotesService.js'
 import store from '../store.js'
 import { categoryLabel, getDraggedNoteId, isNoteDrag } from '../Util.js'
 
@@ -150,6 +198,9 @@ export default {
 		FolderIcon,
 		FolderOutlineIcon,
 		HistoryIcon,
+		NoteColorPicker,
+		PaletteOutlineIcon,
+		TagIcon,
 	},
 
 	data() {
@@ -159,6 +210,7 @@ export default {
 			newCategoryDraft: false,
 			newCategoryMonitor: null,
 			newCategoryDropNoteId: null,
+			colorEditTag: null,
 		}
 	},
 
@@ -181,6 +233,14 @@ export default {
 
 		archivedCount() {
 			return store.notes.getArchivedCount()
+		},
+
+		tags() {
+			return store.notes.getTagsWithCounts()
+		},
+
+		selectedTag() {
+			return store.notes.getSelectedTag()
 		},
 	},
 
@@ -451,6 +511,45 @@ export default {
 
 		onSelectArchived() {
 			store.notes.setShowArchived(true)
+		},
+
+		onSelectTag(name) {
+			store.notes.setSelectedTag(name === this.selectedTag ? null : name)
+		},
+
+		async onTagColor(name, color) {
+			this.colorEditTag = null
+			try {
+				await setTagColor(name, color)
+			} catch {
+				// NotesService already shows a toast on failure.
+			}
+		},
+
+		async onRenameTag(oldName, newName) {
+			const trimmed = newName?.trim() ?? ''
+			if (!trimmed || trimmed === oldName) {
+				return
+			}
+			try {
+				await renameTagRequest(oldName, trimmed)
+				if (this.selectedTag === oldName) {
+					store.notes.setSelectedTag(trimmed)
+				}
+			} catch {
+				// NotesService already shows a toast on failure.
+			}
+		},
+
+		async onDeleteTag(name) {
+			try {
+				await deleteTagRequest(name)
+				if (this.selectedTag === name) {
+					store.notes.setSelectedTag(null)
+				}
+			} catch {
+				// NotesService already shows a toast on failure.
+			}
 		},
 
 		async closeOpenNoteBeforeDelete(categoryName) {

@@ -90,6 +90,9 @@ export function fetchNotes() {
 			if (response.data.categories) {
 				store.notes.setCategories(response.data.categories)
 			}
+			if (response.data.tagColors) {
+				store.notes.setTagColors(response.data.tagColors)
+			}
 			if (response.data.noteIds && response.data.notesData) {
 				store.notes.updateNotes({ noteIds: response.data.noteIds, notes: response.data.notesData })
 			}
@@ -363,6 +366,75 @@ export function setArchived(noteId, archived) {
 		.catch((err) => {
 			logger.error('Setting archived state for note has failed', { noteId, error: err })
 			handleSyncError(t('notesplus', 'Archiving note {id} has failed.', { id: noteId }), err)
+			throw err
+		})
+}
+
+export function setTags(noteId, tags) {
+	return axios
+		.put(url('/notes/' + noteId + '/tags'), { tags })
+		.then((response) => {
+			store.notes.setNoteAttribute({ noteId, attribute: 'tags', value: response.data })
+			return response.data
+		})
+		.catch((err) => {
+			logger.error('Setting tags for note has failed', { noteId, error: err })
+			handleSyncError(t('notesplus', 'Setting tags for note {id} has failed.', { id: noteId }), err)
+			throw err
+		})
+}
+
+export function fetchTagPalette() {
+	return axios
+		.get(url('/tags'))
+		.then((response) => {
+			store.notes.setTagColors(response.data)
+			return response.data
+		})
+		.catch((err) => {
+			logger.error('Fetching tag palette has failed', { error: err })
+			throw err
+		})
+}
+
+export function setTagColor(name, color) {
+	return axios
+		.put(url('/tags/color'), { name, color: color ?? '' })
+		.then((response) => {
+			store.notes.setTagColors(response.data)
+			return response.data
+		})
+		.catch((err) => {
+			logger.error('Setting tag color has failed', { name, error: err })
+			handleSyncError(t('notesplus', 'Setting the color for tag "{tag}" has failed.', { tag: name }), err)
+			throw err
+		})
+}
+
+export function renameTag(oldName, newName) {
+	return axios
+		.put(url('/tags/rename'), { oldName, newName })
+		.then((response) => {
+			store.notes.setTagColors(response.data)
+			return fetchNotes()
+		})
+		.catch((err) => {
+			logger.error('Renaming tag has failed', { oldName, error: err })
+			handleSyncError(t('notesplus', 'Renaming tag "{tag}" has failed.', { tag: oldName }), err)
+			throw err
+		})
+}
+
+export function deleteTag(name) {
+	return axios
+		.delete(url('/tags'), { params: { name } })
+		.then((response) => {
+			store.notes.setTagColors(response.data)
+			return fetchNotes()
+		})
+		.catch((err) => {
+			logger.error('Deleting tag has failed', { name, error: err })
+			handleSyncError(t('notesplus', 'Deleting tag "{tag}" has failed.', { tag: name }), err)
 			throw err
 		})
 }

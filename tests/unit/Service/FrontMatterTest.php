@@ -110,6 +110,31 @@ class FrontMatterTest extends TestCase {
 		$this->assertSame("# Note\nbody\n", $parsed['body']);
 	}
 
+	public function testTagsFlowListRoundTrips() : void {
+		// E05: tags are a `[a, b]` flow list decoding to a string[]
+		$attrs = ['tags' => ['work', 'ideas']];
+		$raw = $this->fm->serialize($attrs, "body\n");
+		$this->assertStringContainsString('tags: [work, ideas]', $raw);
+		$this->assertSame(['work', 'ideas'], $this->fm->parse($raw)['attrs']['tags']);
+	}
+
+	public function testTagsWithSpacesAreQuotedInList() : void {
+		$raw = $this->fm->serialize(['tags' => ['to do', 'work']], "body\n");
+		$this->assertStringContainsString("tags: ['to do', work]", $raw);
+		$this->assertSame(['to do', 'work'], $this->fm->parse($raw)['attrs']['tags']);
+	}
+
+	public function testEmptyTagListIsDroppedNotEmitted() : void {
+		$raw = $this->fm->serialize(['tags' => []], "body\n");
+		$this->assertSame("body\n", $raw);
+	}
+
+	public function testTagsCoexistWithColorAndArchived() : void {
+		$attrs = ['color' => '#f28b82', 'archived' => 'true', 'tags' => ['a', 'b']];
+		$raw = $this->fm->serialize($attrs, "# N\nbody\n");
+		$this->assertSame($attrs, $this->fm->parse($raw)['attrs']);
+	}
+
 	public function testCrlfLineEndings() : void {
 		$raw = "---\r\ncolor: '#fdcfe8'\r\n---\r\nbody line\r\n";
 		$parsed = $this->fm->parse($raw);

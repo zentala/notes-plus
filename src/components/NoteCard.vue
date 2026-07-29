@@ -36,6 +36,15 @@
 			</p>
 		</router-link>
 
+		<TagChips
+			v-if="noteTags.length"
+			class="note-card__tags"
+			:tags="noteTags"
+			:removable="true"
+			@filter="onTagFilter"
+			@remove="onRemoveTag"
+		/>
+
 		<div class="note-card__actions">
 			<NcActions :force-menu="true" @update:open="onMenuChange">
 				<NcActionButton :icon="actionFavoriteIcon" @click="onToggleFavorite">
@@ -101,6 +110,29 @@
 					{{ t('notesplus', 'Change category') }}
 				</NcActionInput>
 
+				<NcActionButton v-if="!showTagSelect" :close-after-click="false" @click="showTagSelect = true">
+					<template #icon>
+						<TagOutlineIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Add tag') }}
+				</NcActionButton>
+				<NcActionInput
+					v-else
+					type="multiselect"
+					label="label"
+					track-by="id"
+					:multiple="false"
+					:options="tagOptions"
+					:taggable="true"
+					@input="onAddTag"
+					@search-change="onAddTag"
+				>
+					<template #icon>
+						<TagOutlineIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Add tag') }}
+				</NcActionInput>
+
 				<NcActionButton v-if="!renaming" @click="startRenaming">
 					<PencilOutlineIcon slot="icon" :size="20" />
 					{{ t('notesplus', 'Rename') }}
@@ -144,7 +176,9 @@ import PaletteOutlineIcon from 'vue-material-design-icons/PaletteOutline.vue'
 import PencilOutlineIcon from 'vue-material-design-icons/PencilOutline.vue'
 import ShareVariantOutlineIcon from 'vue-material-design-icons/ShareVariantOutline.vue'
 import StarIcon from 'vue-material-design-icons/Star.vue'
+import TagOutlineIcon from 'vue-material-design-icons/TagOutline.vue'
 import NoteColorPicker from './NoteColorPicker.vue'
+import TagChips from './TagChips.vue'
 import noteActions from './noteActions.js'
 
 export default {
@@ -165,6 +199,8 @@ export default {
 		PencilOutlineIcon,
 		ShareVariantOutlineIcon,
 		StarIcon,
+		TagChips,
+		TagOutlineIcon,
 	},
 
 	mixins: [noteActions],
@@ -225,6 +261,10 @@ export default {
 	-webkit-line-clamp: 12;
 	line-clamp: 12;
 	overflow: hidden;
+}
+
+.note-card__tags {
+	padding: 0 12px 10px;
 }
 
 .note-card__actions {

@@ -119,6 +119,48 @@ class Note {
 	}
 
 	/**
+	 * The note's tags, from the front-matter `tags:` flow list (ADR-008). Always
+	 * a list of clean display strings; colours live in the per-user palette, not
+	 * on the note.
+	 *
+	 * @return string[]
+	 */
+	public function getTags() : array {
+		$attrs = $this->frontMatter->parse($this->getRawContent())['attrs'];
+		$tags = $attrs['tags'] ?? [];
+		if (is_string($tags)) {
+			// a note edited by hand may carry a scalar `tags: work`
+			$tags = [$tags];
+		}
+		return $this->normalizeTags($tags);
+	}
+
+	/**
+	 * Trim, drop empties, and de-duplicate case-insensitively while keeping the
+	 * first-seen display casing. Order is preserved.
+	 *
+	 * @param string[] $tags
+	 * @return string[]
+	 */
+	private function normalizeTags(array $tags) : array {
+		$result = [];
+		$seen = [];
+		foreach ($tags as $tag) {
+			$tag = trim((string)$tag);
+			if ($tag === '') {
+				continue;
+			}
+			$key = mb_strtolower($tag, 'UTF-8');
+			if (isset($seen[$key])) {
+				continue;
+			}
+			$seen[$key] = true;
+			$result[] = $tag;
+		}
+		return $result;
+	}
+
+	/**
 	 * @param int $maxlen maximum length of the excerpt in characters
 	 * @param bool $preserveLines keep line breaks (multi-line card preview) instead of
 	 *                            collapsing them to an em-space (single-line list row)
@@ -173,6 +215,9 @@ class Note {
 		}
 		if (!in_array('archived', $exclude)) {
 			$data['archived'] = $this->getArchived();
+		}
+		if (!in_array('tags', $exclude)) {
+			$data['tags'] = $this->getTags();
 		}
 		if (!in_array('excerpt', $exclude)) {
 			try {
@@ -279,6 +324,28 @@ class Note {
 			$attrs['archived'] = 'true';
 		} else {
 			unset($attrs['archived']);
+		}
+		$this->writeRawContent($this->frontMatter->serialize($attrs, $parsed['body']));
+	}
+
+	/**
+	 * Replace the note's tag set. Writes the normalized list to the front-matter
+	 * `tags:` flow list (removing the key entirely when empty).
+	 *
+	 * @param string[] $tags
+	 */
+	public function setTags(array $tags) : void {
+		$tags = $this->normalizeTags($tags);
+		if ($tags === $this->getTags()) {
+			return;
+		}
+		$this->noteUtil->ensureNoteIsWritable($this->file);
+		$parsed = $this->frontMatter->parse($this->getRawContent());
+		$attrs = $parsed['attrs'];
+		if (count($tags) === 0) {
+			unset($attrs['tags']);
+		} else {
+			$attrs['tags'] = $tags;
 		}
 		$this->writeRawContent($this->frontMatter->serialize($attrs, $parsed['body']));
 	}
