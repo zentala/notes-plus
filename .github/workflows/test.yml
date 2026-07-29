@@ -80,7 +80,7 @@ jobs:
       working-directory: ../
       run: |
         git clone https://github.com/nextcloud/server.git --recursive --depth 1 -b ${SERVER_BRANCH} server
-        cp -r notes server/apps/
+        cp -r notes-plus server/apps/notesplus
     - name: Setup Nextcloud server
       working-directory: ../server/
       run: |
@@ -91,14 +91,14 @@ jobs:
         php occ user:setting quotatest files quota "0"
     - name: Setup Notes app
       working-directory: ../server/
-      run: php occ app:enable notes
+      run: php occ app:enable notesplus
     - name: Create some reference notes
       working-directory: ../
       run: |
         mkdir -p server/data/test/files/
         mkdir -p server/data/quotatest/files/
-        cp -r notes/tests/reference-notes server/data/test/files/Notes
-        cp -r notes/tests/reference-notes server/data/quotatest/files/Notes
+        cp -r notes-plus/tests/reference-notes server/data/test/files/Notes
+        cp -r notes-plus/tests/reference-notes server/data/quotatest/files/Notes
         chmod 444 server/data/test/files/Notes/ReadOnly/ReadOnly-Note.txt
         php server/occ files:scan --all
     - name: Start Nextcloud server
