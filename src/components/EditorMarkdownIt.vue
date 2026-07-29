@@ -4,8 +4,11 @@
 -->
 
 <template>
-	<!-- eslint-disable-next-line vue/no-v-html -->
-	<div class="note-preview" v-html="html" />
+	<div>
+		<!-- eslint-disable-next-line vue/no-v-html -->
+		<div class="note-preview" v-html="html" />
+		<LinkPreviewList :content="value" />
+	</div>
 </template>
 
 <script>
@@ -14,11 +17,16 @@ import { generateUrl } from '@nextcloud/router'
 import MarkdownIt from 'markdown-it'
 import markdownItBidi from 'markdown-it-bidi'
 import markdownItTaskCheckbox from 'markdown-it-task-checkbox'
+import LinkPreviewList from './LinkPreviewList.vue'
 import { setCheckedAt } from '../checklist.js'
 import { escapeHtml } from '../Util.js'
 
 export default {
 	name: 'EditorMarkdownIt',
+
+	components: {
+		LinkPreviewList,
+	},
 
 	props: {
 		value: {

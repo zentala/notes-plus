@@ -102,6 +102,9 @@ return ['routes' => [
 		'verb' => 'DELETE',
 	],
 
+	//////////  L I N K   P R E V I E W  (E07)  //////////
+	['name' => 'link_preview#preview', 'url' => '/link-preview', 'verb' => 'GET'],
+
 	//////////  T A G S  (palette + reconcile, ADR-008)  //////////
 	['name' => 'tags#index', 'url' => '/tags', 'verb' => 'GET'],
 	['name' => 'tags#setColor', 'url' => '/tags/color', 'verb' => 'PUT'],

@@ -439,6 +439,25 @@ export function deleteTag(name) {
 		})
 }
 
+// url → Promise<{url,title,description,imageUrl}|null>. Caches in-flight and
+// resolved previews so re-rendering a note never refetches (server caches too).
+const linkPreviewCache = new Map()
+
+export function fetchLinkPreview(link) {
+	if (linkPreviewCache.has(link)) {
+		return linkPreviewCache.get(link)
+	}
+	const promise = axios
+		.get(url('/link-preview'), {
+			params: { url: link },
+			validateStatus: (status) => status === 200 || status === 204,
+		})
+		.then((response) => (response.status === 204 ? null : response.data))
+		.catch(() => null)
+	linkPreviewCache.set(link, promise)
+	return promise
+}
+
 export function setCategory(noteId, category) {
 	return axios
 		.put(url('/notes/' + noteId + '/category'), { category })
