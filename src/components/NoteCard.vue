@@ -6,8 +6,9 @@
 <!--
   Keep-style card tile for the grid view. Shows title, a plain-text excerpt
   (server-provided note.excerpt — no live markdown render, cheap at 1000s of
-  notes), color, and pinned/error/share state. The action menu is the shared
-  NoteActionsMenu so the card and the list row never drift.
+  notes), color, and pinned/error/share state. Shared behaviour and the action
+  handlers live in the noteActions mixin; the action buttons are inline here
+  because NcActions needs its NcActionButton children directly in the slot.
 -->
 <template>
 	<div
@@ -37,125 +38,136 @@
 
 		<div class="note-card__actions">
 			<NcActions :force-menu="true" @update:open="onMenuChange">
-				<NoteActionsMenu
-					ref="actions"
-					:note="note"
-					@note-deleted="onNoteDeleted"
-					@start-renaming="onStartRenaming"
-				/>
+				<NcActionButton :icon="actionFavoriteIcon" @click="onToggleFavorite">
+					{{ actionFavoriteText }}
+				</NcActionButton>
+
+				<NcActionButton @click="onToggleArchived">
+					<template #icon>
+						<ArchiveArrowUpOutlineIcon v-if="note.archived" :size="20" />
+						<ArchiveArrowDownOutlineIcon v-else :size="20" />
+					</template>
+					{{ actionArchivedText }}
+				</NcActionButton>
+
+				<NcActionButton @click="onToggleSharing">
+					<template #icon>
+						<ShareVariantOutlineIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Share') }}
+				</NcActionButton>
+
+				<NcActionButton v-if="!showColorSelect" :close-after-click="false" @click="showColorSelect = true">
+					<template #icon>
+						<PaletteOutlineIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Change color') }}
+				</NcActionButton>
+				<template v-else>
+					<NcActionButton :close-after-click="false" @click="showColorSelect = false">
+						<template #icon>
+							<ChevronLeftIcon :size="20" />
+						</template>
+						{{ t('notesplus', 'Back') }}
+					</NcActionButton>
+					<NoteColorPicker
+						:value="note.color"
+						@select="onColorSelected"
+					/>
+				</template>
+
+				<NcActionButton v-if="!showCategorySelect" @click="showCategorySelect = true">
+					<template #icon>
+						<FolderOutlineIcon :size="20" />
+					</template>
+					{{ categoryTitle }}
+				</NcActionButton>
+				<NcActionInput
+					v-else
+					:model-value="note.category"
+					type="multiselect"
+					label="label"
+					track-by="id"
+					:multiple="false"
+					:options="categories"
+					:disabled="loading.category"
+					:taggable="true"
+					@input="onCategoryChange"
+					@search-change="onCategoryChange"
+				>
+					<template #icon>
+						<FolderOutlineIcon :size="20" />
+					</template>
+					{{ t('notesplus', 'Change category') }}
+				</NcActionInput>
+
+				<NcActionButton v-if="!renaming" @click="startRenaming">
+					<PencilOutlineIcon slot="icon" :size="20" />
+					{{ t('notesplus', 'Rename') }}
+				</NcActionButton>
+				<NcActionInput v-else
+					v-model.trim="newTitle"
+					:disabled="!renaming"
+					:placeholder="t('notesplus', 'Rename note')"
+					:show-trailing-button="true"
+					@input="onInputChange($event)"
+					@submit="onRename"
+				>
+					<PencilOutlineIcon slot="icon" :size="20" />
+				</NcActionInput>
+
+				<NcActionSeparator />
+
+				<NcActionButton v-if="!note.readonly"
+					:icon="actionDeleteIcon"
+					:close-after-click="true"
+					@click="onDeleteNote"
+				>
+					{{ t('notesplus', 'Delete note') }}
+				</NcActionButton>
 			</NcActions>
 		</div>
 	</div>
 </template>
 
 <script>
-import { subscribe, unsubscribe } from '@nextcloud/event-bus'
+import NcActionButton from '@nextcloud/vue/components/NcActionButton'
+import NcActionInput from '@nextcloud/vue/components/NcActionInput'
 import NcActions from '@nextcloud/vue/components/NcActions'
+import NcActionSeparator from '@nextcloud/vue/components/NcActionSeparator'
 import AlertOctagonOutlineIcon from 'vue-material-design-icons/AlertOctagonOutline.vue'
+import ArchiveArrowDownOutlineIcon from 'vue-material-design-icons/ArchiveArrowDownOutline.vue'
+import ArchiveArrowUpOutlineIcon from 'vue-material-design-icons/ArchiveArrowUpOutline.vue'
+import ChevronLeftIcon from 'vue-material-design-icons/ChevronLeft.vue'
+import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
+import PaletteOutlineIcon from 'vue-material-design-icons/PaletteOutline.vue'
+import PencilOutlineIcon from 'vue-material-design-icons/PencilOutline.vue'
 import ShareVariantOutlineIcon from 'vue-material-design-icons/ShareVariantOutline.vue'
 import StarIcon from 'vue-material-design-icons/Star.vue'
-import NoteActionsMenu from './NoteActionsMenu.vue'
-import { normalizeColor } from '../notes-colors.js'
-import store from '../store.js'
+import NoteColorPicker from './NoteColorPicker.vue'
+import noteActions from './noteActions.js'
 
 export default {
 	name: 'NoteCard',
 
 	components: {
 		AlertOctagonOutlineIcon,
+		ArchiveArrowDownOutlineIcon,
+		ArchiveArrowUpOutlineIcon,
+		ChevronLeftIcon,
+		FolderOutlineIcon,
+		NcActionButton,
+		NcActionInput,
 		NcActions,
-		NoteActionsMenu,
+		NcActionSeparator,
+		NoteColorPicker,
+		PaletteOutlineIcon,
+		PencilOutlineIcon,
 		ShareVariantOutlineIcon,
 		StarIcon,
 	},
 
-	props: {
-		note: {
-			type: Object,
-			required: true,
-		},
-	},
-
-	data() {
-		return {
-			isShareCreated: false,
-		}
-	},
-
-	computed: {
-		isDraggable() {
-			return !this.note.readonly
-		},
-
-		isSelected() {
-			return store.notes.getSelectedNote() === this.note.id
-		},
-
-		isShared() {
-			return this.note.isShared || this.isShareCreated
-		},
-
-		title() {
-			return this.note.title + (this.note.unsaved ? ' *' : '')
-		},
-
-		colorStyle() {
-			const color = normalizeColor(this.note.color)
-			return color ? { '--np-note-color': color } : {}
-		},
-	},
-
-	mounted() {
-		subscribe('files_sharing:share:created', this.onShareCreated)
-	},
-
-	destroyed() {
-		unsubscribe('files_sharing:share:created', this.onShareCreated)
-	},
-
-	methods: {
-		onDragStart(event) {
-			if (!this.isDraggable) {
-				event.preventDefault()
-				return
-			}
-
-			const noteId = this.note.id.toString()
-			event.dataTransfer.effectAllowed = 'move'
-			try {
-				event.dataTransfer.setData('application/x-nextcloud-notes-note-id', noteId)
-			} catch {
-				// Some browsers only allow specific mime types.
-			}
-			event.dataTransfer.setData('text/plain', noteId)
-		},
-
-		onMenuChange(open) {
-			if (!open) {
-				this.$refs.actions?.resetMenu()
-			}
-		},
-
-		onNoteSelected() {
-			this.$emit('note-selected', this.note.id)
-		},
-
-		onStartRenaming(noteId) {
-			this.$emit('start-renaming', noteId)
-		},
-
-		onNoteDeleted(note) {
-			this.$emit('note-deleted', note)
-		},
-
-		async onShareCreated(event) {
-			const { share } = event
-
-			if (share.fileSource === this.note.id) {
-				this.isShareCreated = true
-			}
-		},
-	},
+	mixins: [noteActions],
 }
 </script>
 
