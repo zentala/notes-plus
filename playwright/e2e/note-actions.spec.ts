@@ -30,6 +30,9 @@ test.describe('Note actions', () => {
 		await openNoteActions(page, noteId)
 		await page.getByRole('menuitem', { name: 'Add to favorites' }).click()
 
+		// favoriting re-sorts the note into the pinned group and re-renders the row;
+		// wait for the star before re-opening the menu, or the toggle races the remount
+		await expect(noteRow(page, noteId).locator('.star-icon')).toBeVisible()
 		await openNoteActions(page, noteId)
 		await expect(page.getByRole('menuitem', { name: 'Remove from favorites' })).toBeVisible()
 		await page.keyboard.press('Escape')
@@ -37,6 +40,7 @@ test.describe('Note actions', () => {
 		await openNoteActions(page, noteId)
 		await page.getByRole('menuitem', { name: 'Remove from favorites' }).click()
 
+		await expect(noteRow(page, noteId).locator('.star-icon')).toHaveCount(0)
 		await openNoteActions(page, noteId)
 		await expect(page.getByRole('menuitem', { name: 'Add to favorites' })).toBeVisible()
 	})

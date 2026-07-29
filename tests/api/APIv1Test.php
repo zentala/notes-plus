@@ -84,7 +84,8 @@ class APIv1Test extends CommonAPITest {
 			'title' => 'Archive note',
 			'content' => '# Archive note' . PHP_EOL . 'body',
 		], (object)[]);
-		$this->assertFalse($note->archived, 'New note is not archived');
+		$created = json_decode($this->http->request('GET', 'notes/' . $note->id)->getBody()->getContents());
+		$this->assertFalse($created->archived, 'New note is not archived');
 
 		$etagBefore = $this->http->request('GET', 'notes/' . $note->id)->getHeaderLine('ETag');
 
