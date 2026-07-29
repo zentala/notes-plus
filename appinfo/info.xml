@@ -12,7 +12,7 @@
 Notes+ is a community fork of the Nextcloud Notes app that adds the Google-Keep-style features the official app has long declined — colored multi-tag labels, per-note colors, archive, a card grid, and first-class checklists — while keeping every note as a plain, sync-safe Markdown file in your Nextcloud (editable from any client). Colors and tags live in the note's front-matter, so your notes stay portable and exportable. A separate REST API allows easy integration. Fork of [Nextcloud Notes](https://github.com/nextcloud/notes) (AGPL-3.0-or-later).
 
 NOTE: the app id / PHP namespace are still `notes` during early development; they are renamed to `notesplus` as a build-verified step before app-store publish (see the plan). The official mobile apps target the upstream `notes` app and do not connect to this fork.]]></description>
-	<version>6.0.2</version>
+	<version>6.1.0</version>
 	<licence>agpl</licence>
 	<author>Paweł Żentała</author>
 	<author>Kristof Hamann</author>
