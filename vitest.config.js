@@ -11,7 +11,7 @@ export default defineConfig({
 	plugins: [vue()],
 	test: {
 		environment: 'jsdom',
-		include: ['src/**/*.test.js'],
+		include: ['src/**/*.test.js', 'tools/**/*.test.js'],
 		setupFiles: [fileURLToPath(new URL('./src/test-setup.js', import.meta.url))],
 	},
 })
