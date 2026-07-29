@@ -80,7 +80,7 @@ class NotesController extends Controller {
 				'notesData' => $nac ? array_values($nac['notesData']) : null,
 				'noteIds' => $nac ? array_keys($nac['notesAll']) : null,
 				'categories' => $nac['categories'] ?? null,
-				'tagColors' => $this->tagPalette->getAll($userId),
+				'tagColors' => (object)$this->tagPalette->getAll($userId),
 				'settings' => $settings,
 				'lastViewedNote' => $lastViewedNote,
 				'errorMessage' => $errorMessage,

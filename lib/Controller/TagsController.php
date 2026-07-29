@@ -36,7 +36,7 @@ class TagsController extends Controller {
 	#[NoAdminRequired]
 	public function index() : JSONResponse {
 		return $this->helper->handleErrorResponse(function () {
-			return $this->palette->getAll($this->helper->getUID());
+			return (object)$this->palette->getAll($this->helper->getUID());
 		});
 	}
 
@@ -44,7 +44,7 @@ class TagsController extends Controller {
 	#[NoAdminRequired]
 	public function setColor(string $name, ?string $color = null) : JSONResponse {
 		return $this->helper->handleErrorResponse(function () use ($name, $color) {
-			return $this->palette->setColor($this->helper->getUID(), $name, $color ?: null);
+			return (object)$this->palette->setColor($this->helper->getUID(), $name, $color ?: null);
 		});
 	}
 
@@ -59,7 +59,7 @@ class TagsController extends Controller {
 					$tags
 				);
 			});
-			return $this->palette->rename($userId, $oldName, $newName);
+			return (object)$this->palette->rename($userId, $oldName, $newName);
 		});
 	}
 
@@ -71,7 +71,7 @@ class TagsController extends Controller {
 			$this->reconcile($userId, function (array $tags) use ($name) {
 				return array_values(array_filter($tags, fn ($tag) => !$this->same($tag, $name)));
 			});
-			return $this->palette->delete($userId, $name);
+			return (object)$this->palette->delete($userId, $name);
 		});
 	}
 

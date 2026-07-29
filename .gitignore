@@ -56,3 +56,6 @@ nbproject
 test-results/
 # Private planning repo (nested git, private remote) — never published
 .plan/
+
+# Keep importer local state (never commit)
+tools/keep-import/.state.json

@@ -113,7 +113,7 @@
 				:options="tagOptions"
 				:taggable="true"
 				@input="onAddTag"
-				@search-change="onAddTag"
+				@tag="onAddTag"
 			>
 				<template #icon>
 					<TagOutlineIcon :size="20" />
