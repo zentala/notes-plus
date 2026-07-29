@@ -7,7 +7,7 @@ import { showError } from '@nextcloud/dialogs'
 import { emit, subscribe, unsubscribe } from '@nextcloud/event-bus'
 import logger from '../Logger.js'
 import { normalizeColor } from '../notes-colors.js'
-import { deleteNote, fetchNote, setArchived, setCategory, setColor, setFavorite, setTitle } from '../NotesService.js'
+import { deleteNote, fetchNote, setArchived, setCategory, setColor, setFavorite, setTags, setTitle } from '../NotesService.js'
 import store from '../store.js'
 import { categoryLabel, routeIsNewNote } from '../Util.js'
 
@@ -41,6 +41,7 @@ export default {
 			renaming: false,
 			showCategorySelect: false,
 			showColorSelect: false,
+			showTagSelect: false,
 			isShareCreated: false,
 		}
 	},
@@ -91,6 +92,20 @@ export default {
 			return 'icon-delete' + (this.loading.delete ? ' loading' : '')
 		},
 
+		noteTags() {
+			return (this.note.tags || []).map((name) => ({
+				name,
+				color: store.notes.getTagColor(name),
+			}))
+		},
+
+		tagOptions() {
+			const current = new Set((this.note.tags || []).map((tag) => tag.toLowerCase()))
+			return store.notes.getTagsWithCounts()
+				.filter((tag) => !current.has(tag.name.toLowerCase()))
+				.map((tag) => ({ id: tag.name, label: tag.name }))
+		},
+
 		categories() {
 			return [
 				{
@@ -134,7 +149,30 @@ export default {
 			if (!open) {
 				this.showCategorySelect = false
 				this.showColorSelect = false
+				this.showTagSelect = false
 			}
+		},
+
+		async onAddTag(result) {
+			this.showTagSelect = false
+			const name = (result?.id ?? result?.label ?? result ?? '').toString().trim()
+			if (!name) {
+				return
+			}
+			const tags = this.note.tags || []
+			if (tags.some((tag) => tag.toLowerCase() === name.toLowerCase())) {
+				return
+			}
+			await setTags(this.note.id, [...tags, name])
+		},
+
+		async onRemoveTag(name) {
+			const tags = (this.note.tags || []).filter((tag) => tag.toLowerCase() !== name.toLowerCase())
+			await setTags(this.note.id, tags)
+		},
+
+		onTagFilter(name) {
+			store.notes.setSelectedTag(name)
 		},
 
 		onNoteSelected() {

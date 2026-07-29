@@ -16,9 +16,11 @@ export const useNotesStore = defineStore('notes', {
 		notes: [],
 		notesIds: {},
 		selectedCategory: null,
+		selectedTag: null,
 		selectedNote: null,
 		filterString: '',
 		showArchived: false,
+		tagColors: {},
 	}),
 
 	getters: {
@@ -106,13 +108,20 @@ export const useNotesStore = defineStore('notes', {
 		getFilteredNotes: (state) => () => {
 			const appStore = useAppStore()
 			const searchText = appStore.searchText.toLowerCase()
+			const selectedTag = state.selectedTag !== null ? state.selectedTag.toLowerCase() : null
 			const notes = state.notes.filter((note) => {
 				// archived notes live only in the Archived view (and vice versa)
 				if (state.showArchived !== Boolean(note.archived)) {
 					return false
 				}
 
+				if (selectedTag !== null
+					&& !(note.tags || []).some((tag) => tag.toLowerCase() === selectedTag)) {
+					return false
+				}
+
 				if (!state.showArchived
+					&& selectedTag === null
 					&& state.selectedCategory !== null
 					&& state.selectedCategory !== note.category
 					&& !note.category.startsWith(state.selectedCategory + '/')) {
@@ -191,6 +200,65 @@ export const useNotesStore = defineStore('notes', {
 
 		getArchivedCount: (state) => () => {
 			return state.notes.filter((note) => note.archived).length
+		},
+
+		getSelectedTag: (state) => () => {
+			return state.selectedTag
+		},
+
+		/**
+		 * Every tag in use across non-archived notes, with a usage count and its
+		 * palette colour (null when uncoloured). Tags known only from the palette
+		 * (coloured but currently unused) are included with count 0. Sorted by
+		 * name; de-duplicated case-insensitively keeping first-seen display casing.
+		 *
+		 * @param {object} state the Pinia notes state
+		 */
+		getTagsWithCounts: (state) => () => {
+			const byKey = {}
+			const add = (name, used) => {
+				if (!name) {
+					return
+				}
+				const key = name.toLowerCase()
+				if (byKey[key] === undefined) {
+					byKey[key] = { name, count: 0, color: state.tagColors[name] ?? null }
+				}
+				if (used) {
+					byKey[key].count += 1
+				}
+			}
+			for (const note of state.notes) {
+				if (note.archived) {
+					continue
+				}
+				for (const tag of note.tags || []) {
+					add(tag, true)
+				}
+			}
+			for (const name of Object.keys(state.tagColors)) {
+				add(name, false)
+			}
+			// resolve palette colour case-insensitively for tags first seen on a note
+			for (const entry of Object.values(byKey)) {
+				if (entry.color === null) {
+					const match = Object.keys(state.tagColors)
+						.find((n) => n.toLowerCase() === entry.name.toLowerCase())
+					entry.color = match ? state.tagColors[match] : null
+				}
+			}
+			return Object.values(byKey).sort((a, b) => a.name.localeCompare(b.name))
+		},
+
+		getTagColor: (state) => (name) => {
+			if (!name) {
+				return null
+			}
+			if (state.tagColors[name] !== undefined) {
+				return state.tagColors[name]
+			}
+			const match = Object.keys(state.tagColors).find((n) => n.toLowerCase() === name.toLowerCase())
+			return match ? state.tagColors[match] : null
 		},
 	},
 
@@ -280,12 +348,29 @@ export const useNotesStore = defineStore('notes', {
 
 		setSelectedCategory(category) {
 			this.selectedCategory = category
-			// picking a real category leaves the Archived view
+			// picking a real category leaves the Archived view and any tag filter
 			this.showArchived = false
+			this.selectedTag = null
 		},
 
 		setShowArchived(showArchived) {
 			this.showArchived = showArchived
+			if (showArchived) {
+				this.selectedTag = null
+			}
+		},
+
+		setSelectedTag(tag) {
+			this.selectedTag = tag
+			// a tag view spans categories and excludes archived notes
+			if (tag !== null) {
+				this.selectedCategory = null
+				this.showArchived = false
+			}
+		},
+
+		setTagColors(tagColors) {
+			this.tagColors = tagColors || {}
 		},
 
 		setSelectedNote(note) {

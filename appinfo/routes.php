@@ -82,7 +82,7 @@ return ['routes' => [
 		'verb' => 'PUT',
 		'requirements' => [
 			'id' => '\d+',
-			'property' => '(modified|title|category|favorite|color|archived)',
+			'property' => '(modified|title|category|favorite|color|archived|tags)',
 		],
 	],
 	[
@@ -101,6 +101,15 @@ return ['routes' => [
 		'url' => '/notes/category',
 		'verb' => 'DELETE',
 	],
+
+	//////////  L I N K   P R E V I E W  (E07)  //////////
+	['name' => 'link_preview#preview', 'url' => '/link-preview', 'verb' => 'GET'],
+
+	//////////  T A G S  (palette + reconcile, ADR-008)  //////////
+	['name' => 'tags#index', 'url' => '/tags', 'verb' => 'GET'],
+	['name' => 'tags#setColor', 'url' => '/tags/color', 'verb' => 'PUT'],
+	['name' => 'tags#rename', 'url' => '/tags/rename', 'verb' => 'PUT'],
+	['name' => 'tags#destroy', 'url' => '/tags', 'verb' => 'DELETE'],
 
 	//////////  A T T A C H M E N T S  //////////
 	[
