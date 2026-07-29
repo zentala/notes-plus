@@ -110,8 +110,9 @@ class APIv1Test extends CommonAPITest {
 			'title' => 'Excerpt note',
 			'content' => '# Excerpt note' . PHP_EOL . 'first body line' . PHP_EOL . 'second body line',
 		], (object)[]);
-		$this->assertObjectHasProperty('excerpt', $note, 'Note carries an excerpt');
-		$this->assertStringContainsString('first body line', $note->excerpt, 'Excerpt is the body preview');
+		$created = json_decode($this->http->request('GET', 'notes/' . $note->id)->getBody()->getContents());
+		$this->assertObjectHasProperty('excerpt', $created, 'Note carries an excerpt');
+		$this->assertStringContainsString('first body line', $created->excerpt, 'Excerpt is the body preview');
 
 		// the list carries the excerpt even when content is excluded from the payload
 		$response = $this->http->request('GET', 'notes?exclude=content');

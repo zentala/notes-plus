@@ -195,7 +195,7 @@ abstract class AbstractAPITest extends TestCase {
 
 	protected function createNote(\stdClass $note, \stdClass $expected) : \stdClass {
 		$response = $this->http->request('POST', 'notes', [ 'json' => $note ]);
-		$this->checkResponse($response, 'Create note ' . $expected->title, 200);
+		$this->checkResponse($response, 'Create note ' . ($expected->title ?? $note->title ?? ''), 200);
 		$responseNote = json_decode($response->getBody()->getContents());
 		$note->id = $responseNote->id;
 		foreach (get_object_vars($expected) as $key => $val) {
