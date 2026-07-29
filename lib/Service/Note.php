@@ -119,7 +119,7 @@ class Note {
 	}
 
 	/**
-	 * @param int  $maxlen        maximum length of the excerpt in characters
+	 * @param int $maxlen maximum length of the excerpt in characters
 	 * @param bool $preserveLines keep line breaks (multi-line card preview) instead of
 	 *                            collapsing them to an em-space (single-line list row)
 	 */
