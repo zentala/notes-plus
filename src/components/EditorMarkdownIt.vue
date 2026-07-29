@@ -131,7 +131,7 @@ export default {
 					path = path.split('?').shift()
 					const lowecasePath = path.toLowerCase()
 					path = generateUrl(
-						'apps/notes/notes/{id}/attachment?path={path}',
+						'apps/notesplus/notes/{id}/attachment?path={path}',
 						{ id, path: decodeURIComponent(path) },
 					)
 					token.attrs[aIndex][1] = path
