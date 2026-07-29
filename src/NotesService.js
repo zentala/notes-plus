@@ -11,7 +11,7 @@ import store from './store.js'
 import { copyNote } from './Util.js'
 
 function url(url) {
-	url = `apps/notes${url}`
+	url = `apps/notesplus${url}`
 	return generateUrl(url)
 }
 

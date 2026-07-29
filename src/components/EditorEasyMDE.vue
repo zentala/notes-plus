@@ -236,7 +236,7 @@ export default {
 				data.append('file', temporaryInput.files[0])
 				const originalFilename = temporaryInput.files[0].name
 
-				axios.post(generateUrl('apps/notes') + '/notes/' + id + '/attachment', data)
+				axios.post(generateUrl('apps/notesplus') + '/notes/' + id + '/attachment', data)
 					.then((response) => {
 						const name = response.data.filename
 						const position = {

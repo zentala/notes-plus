@@ -84,7 +84,8 @@ class APIv1Test extends CommonAPITest {
 			'title' => 'Archive note',
 			'content' => '# Archive note' . PHP_EOL . 'body',
 		], (object)[]);
-		$this->assertFalse($note->archived, 'New note is not archived');
+		$created = json_decode($this->http->request('GET', 'notes/' . $note->id)->getBody()->getContents());
+		$this->assertFalse($created->archived, 'New note is not archived');
 
 		$etagBefore = $this->http->request('GET', 'notes/' . $note->id)->getHeaderLine('ETag');
 
@@ -99,6 +100,39 @@ class APIv1Test extends CommonAPITest {
 		// unarchive removes the flag
 		$rn = $this->updateNote($note, (object)[ 'archived' => false ], (object)[ 'archived' => false ]);
 		$this->assertFalse($rn->archived, 'Note unarchived');
+
+		$this->http->request('DELETE', 'notes/' . $note->id);
+	}
+
+	/** @depends testCheckForReferenceNotes */
+	public function testExcerpt() : void {
+		$note = $this->createNote((object)[
+			'category' => '',
+			'title' => 'Excerpt note',
+			'content' => '# Excerpt note' . PHP_EOL . 'first body line' . PHP_EOL . 'second body line',
+		], (object)[]);
+		$created = json_decode($this->http->request('GET', 'notes/' . $note->id)->getBody()->getContents());
+		$this->assertObjectHasProperty('excerpt', $created, 'Note carries an excerpt');
+		$this->assertStringContainsString('first body line', $created->excerpt, 'Excerpt is the body preview');
+
+		// the list carries the excerpt even when content is excluded from the payload
+		$response = $this->http->request('GET', 'notes?exclude=content');
+		$this->checkResponse($response, 'List notes without content', 200);
+		$listed = null;
+		foreach (json_decode($response->getBody()->getContents()) as $n) {
+			if ($n->id === $note->id) {
+				$listed = $n;
+			}
+		}
+		$this->assertNotNull($listed, 'Created note is in the list');
+		$this->assertStringContainsString('first body line', $listed->excerpt, 'List excerpt present');
+		$this->assertFalse(isset($listed->content), 'Content excluded from the list');
+
+		// editing the body changes the excerpt on refetch
+		$this->updateNote($note, (object)[ 'content' => '# Excerpt note' . PHP_EOL . 'rewritten body' ], (object)[]);
+		$response = $this->http->request('GET', 'notes/' . $note->id);
+		$refetched = json_decode($response->getBody()->getContents());
+		$this->assertStringContainsString('rewritten body', $refetched->excerpt, 'Excerpt tracks content edits');
 
 		$this->http->request('DELETE', 'notes/' . $note->id);
 	}

@@ -14,7 +14,7 @@ Vue.use(Router)
 
 export default new Router({
 	mode: 'history',
-	base: generateUrl('apps/notes'),
+	base: generateUrl('apps/notesplus'),
 	linkActiveClass: 'active',
 	routes: [
 		{

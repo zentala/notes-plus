@@ -43,7 +43,7 @@ process.on('SIGINT', stop)
 // Start the Nextcloud docker container
 const ip = await start()
 await waitOnNextcloud(ip)
-await configureNextcloud(['notes'])
+await configureNextcloud(['notesplus'])
 
 // Idle to wait for shutdown
 while (true) {
