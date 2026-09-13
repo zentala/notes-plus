@@ -10,8 +10,11 @@ name: Update nextcloud/ocp
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '5 2 * * 0'
+  # Disabled scheduled runs: this community fork does not commit `3rdparty`,
+  # `vendor`, or `vendor-bin` directories, and does not have the
+  # `COMMAND_BOT_PAT` secret required to open automated PRs.
+  # schedule:
+  #   - cron: '5 2 * * 0'
 
 permissions:
   contents: read
