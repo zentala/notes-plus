@@ -53,6 +53,7 @@ jobs:
     if: needs.changes.outputs.src != 'false'
 
     name: NPM lint
+    timeout-minutes: 20
 
     steps:
       - name: Checkout

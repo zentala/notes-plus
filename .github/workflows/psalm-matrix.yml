@@ -37,6 +37,7 @@ jobs:
 
   static-analysis:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     needs: matrix
     strategy:
       # do not stop on another job's failure

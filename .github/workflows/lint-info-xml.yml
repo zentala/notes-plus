@@ -20,6 +20,7 @@ concurrency:
 jobs:
   xml-linters:
     runs-on: ubuntu-latest-low
+    timeout-minutes: 10
 
     name: info.xml lint
     steps:

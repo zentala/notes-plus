@@ -34,6 +34,7 @@ jobs:
 
   php-lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: matrix
     strategy:
       matrix:

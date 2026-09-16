@@ -46,6 +46,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     needs: changes
     if: needs.changes.outputs.src != 'false'
